@@ -55,7 +55,7 @@ After you install the new version of PXF, perform the following procedure:
     $ ssh gpadmin@<coordinator>
     ```
 
-1. PXF 6.x includes a new version of the `pxf` extension. Register the extension files with Greenplum Database (see [pxf cluster register](ref/pxf-cluster.html)). `$GPHOME` must be set when you run this command:
+1. PXF 6.x includes a new version of the `pxf` extension. Register the extension files with Greenplum Database (see [pxf cluster register](ref/pxf-cluster)). `$GPHOME` must be set when you run this command:
 
     ``` shell
     gpadmin@coordinator$ pxf cluster register

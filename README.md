@@ -1,14 +1,13 @@
-**PXF Build** [![Concourse Build Status](http://ci.ud.gpdb.pivotal.io/api/v1/teams/main/pipelines/pxf-build/badge)](https://ci.ud.gpdb.pivotal.io/teams/main/pipelines/pxf-build) |
-**PXF Certification** [![Concourse Build Status](http://ci.ud.gpdb.pivotal.io/api/v1/teams/main/pipelines/pxf-certification/badge)](https://ci.ud.gpdb.pivotal.io/teams/main/pipelines/pxf-certification)
-
-----------------------------------------------------------------------
-
 Introduction
 ============
 
 PXF is an extensible framework that allows a distributed database like Greenplum to query external data files, whose metadata is not managed by the database.
 PXF includes built-in connectors for accessing data that exists inside HDFS files, Hive tables, HBase tables, JDBC-accessible databases and more.
 Users can also create their own connectors to other data storage or processing engines.
+
+User documentation
+================
+The PXF user documentation is available at [PXF Documentation](https://open-gpdb.github.io/pxf/).
 
 Repository Contents
 ================

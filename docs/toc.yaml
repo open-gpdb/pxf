@@ -1,0 +1,142 @@
+title: Platform Extension Framework (PXF)
+items:
+  - name: Platform Extension Framework Documentation
+    href: index.md
+    hidden: true
+
+  - name: Overview of PXF
+    items:
+    - name: PXF Overview
+      href: content/overview_pxf.md
+    - name: Introduction to PXF
+      href: content/intro_pxf.md
+    - name: About PXF Filter Pushdown
+      href: content/filter_push.md
+    - name: About Column Projection in PXF
+      href: content/col_project.md
+
+  - name: Administering PXF
+    items:
+      - name: Configuring PXF
+        href: content/instcfg_pxf.md
+      - name: About the PXF Installation and Configuration Directories
+        href: content/about_pxf_dir.md
+      - name: About the PXF Configuration Files
+        href: content/config_files.md
+      - name: Installing Java for PXF
+        href: content/install_java.md
+      - name: Configuring PXF Servers
+        href: content/cfg_server.md
+      - name: Configuring PXF Hadoop Connectors (Optional)
+        href: content/client_instcfg.md
+      - name: Configuring User Impersonation and Proxying
+        href: content/pxfuserimpers.md
+      - name: Configuring PXF for Secure HDFS
+        href: content/pxf_kerbhdfs.md
+      - name: Configuring Connectors to Minio and S3 Object Stores (Optional)
+        href: content/s3_objstore_cfg.md
+      - name: Configuring Connectors to Azure and Google Cloud Storage Object Stores (Optional)
+        href: content/objstore_cfg.md
+      - name: Configuring the JDBC Connector (Optional)
+        href: content/jdbc_cfg.md
+      - name: Configuring the JDBC Connector for Hive Access (Optional)
+        href: content/hive_jdbc_cfg.md
+      - name: About the PXF Deployment Topology
+        href: content/deployment_topos.md
+  - name: Starting, Stopping, and Restarting PXF
+    href: content/cfginitstart_pxf.md
+  - name: Granting Users Access to PXF
+    href: content/using_pxf.md
+  - name: Registering PXF Library Dependencies
+    href: content/reg_jar_depend.md
+  - name: Monitoring PXF
+    href: content/monitor_pxf.md
+  - name: Advanced PXF Configuration (Optional)
+    items:
+      - name: PXF Service Host and Port
+        href: content/cfghostport.md
+      - name: Logging
+        href: content/cfg_logging.md
+      - name: Memory and Threading
+        href: content/cfg_mem.md
+  - name: Accessing Hadoop with PXF
+    href: content/access_hdfs.md
+    items:
+      - name: Reading and Writing Text Data
+        href: content/hdfs_text.md
+      - name: Reading and Writing Avro Data
+        href: content/hdfs_avro.md
+      - name: Reading JSON Data
+        href: content/hdfs_json.md
+      - name: Reading ORC Data
+        href: content/hdfs_orc.md
+      - name: Reading and Writing Parquet Data
+        href: content/hdfs_parquet.md
+      - name: Reading and Writing SequenceFile Data
+        href: content/hdfs_seqfile.md
+      - name: Reading a Multi-Line Text File into a Single Table Row
+        href: content/hdfs_fileasrow.md
+      - name: Reading Hive Table Data
+        href: content/hive_pxf.md
+      - name: Reading HBase Table Data
+        href: content/hbase_pxf.md
+      - name: Reading and Writing Fixed-Width Text Data
+        href: content/hdfs_fixedwidth.md
+  - name: Accessing S3-Compatible Object Stores with PXF
+    items:
+      - name: About Accessing S3-Compatible Object Stores
+        href: content/access_objstore.md
+      - name: About Accessing the S3 Object Store
+        href: content/access_s3.md
+      - name: Reading and Writing Text Data
+        href: content/objstore_text.md
+      - name: Reading and Writing Avro Data
+        href: content/objstore_avro.md
+      - name: Reading JSON Data
+        href: content/objstore_json.md
+      - name: Reading ORC Data
+        href: content/objstore_orc.md
+      - name: Reading and Writing Parquet Data
+        href: content/objstore_parquet.md
+      - name: Reading and Writing SequenceFile Data
+        href: content/objstore_seqfile.md
+      - name: Reading a Multi-Line Text File into a Single Table Row
+        href: content/objstore_fileasrow.md
+      - name: Reading CSV and Parquet Data From S3 Using S3 Select
+        href: content/read_s3_s3select.md
+      - name: Reading and Writing Fixed-Width Text Data in an Object Store
+        href: content/objstore_fixedwidth.md
+  - name: Accessing an SQL Database with PXF (JDBC)
+    items:
+      - name: About the JDBC Connector
+        href: content/jdbc_pxf.md
+      - name: 'Example: Reading From and Writing to a MySQL Table'
+        href: content/jdbc_pxf_mysql.md
+      - name: 'Example: Using a Named Query with PostgreSQL'
+        href: content/jdbc_pxf_named.md
+      - name: 'Example: Reading From and Writing to an Oracle Table'
+        href: content/jdbc_pxf_oracle.md
+      - name: 'Example: Reading From and Writing to a PostgreSQL Table'
+        href: content/jdbc_pxf_postgresql.md
+      - name: 'Example: Reading From and Writing to a Trino (formerly Presto SQL) Table'
+        href: content/jdbc_pxf_trino.md
+
+  - name: Accessing Files on a Network File System with PXF
+    href: content/nfs_pxf.md
+  - name: Troubleshooting PXF
+    href: content/troubleshooting_pxf.md
+  - name: PXF 6 Upgrade Guide
+    items:
+      - name: Upgrading from an Earlier Version 6 Release
+        href: content/upgrade_6.md
+      - name: OS Upgrade Considerations for PXF
+        href: content/upgrade_os.md
+      - name: Upgrading PXF
+        href: content/upgrade_pxf_rpm.md
+
+  - name: pxf-cli
+    items:
+      - name: pxf
+        href: content/ref/pxf.md
+      - name: pxf cluster
+        href: content/ref/pxf-cluster.md

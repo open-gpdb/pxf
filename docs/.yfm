@@ -1,0 +1,14 @@
+output-format: html
+allowHTML: true
+remove-hidden-toc-items: true
+
+
+docs-viewer:
+  project-name: pxf
+  themes: ['light', 'dark']
+  github-url-prefix: https://github.com/open-gpdb/pxf/tree/main/docs
+
+  index-page:
+    title: PXF Documentation
+    description: The Platform Extension Framework (PXF) Documentation
+    hidden: true

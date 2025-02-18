@@ -10,3 +10,4 @@
 build/
 server/*/out
 server/tmp
+docs-html/

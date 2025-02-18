@@ -24,8 +24,8 @@ under the License.
 
 PXF provides two management commands:
 
-- [`pxf cluster`](ref/pxf-cluster.html) - manage all PXF Service instances in the Greenplum Database cluster
-- [`pxf`](ref/pxf.html) - manage the PXF Service instance on a specific Greenplum Database host
+- [`pxf cluster`](ref/pxf-cluster) - manage all PXF Service instances in the Greenplum Database cluster
+- [`pxf`](ref/pxf) - manage the PXF Service instance on a specific Greenplum Database host
 
 <div class="note"><b>Note:</b> The procedures in this topic assume that you have added the <code>&lt;PXF_INSTALL_DIR>/bin</code> directory to your <code>$PATH</code>.</div>
 

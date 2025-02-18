@@ -154,12 +154,12 @@ Writable external tables that you create using the `hdfs:fixedwidth` profile can
 
 This example utilizes the data schema introduced in [Example: Reading Fixed-Width Text Data on HDFS](#fixedwidth_read_example). 
 
-| Column Name  | Width | Data Type |
-|-------|-------------------------------------|
-| location | 15 | text |
-| month | 4 | text |
-| number_of_orders | 6 | int |
-| total_sales | 10 | float8 |
+| Column Name  | Width | Data Type    |
+|---|---|---|
+| location | 15 | text         |
+| month | 4 | text         |
+| number_of_orders | 6 | int          |
+| total_sales | 10 | float8       |
 
 #### <a id="fixedwidth_write_proc" class="no-quick-link"></a>Procedure
 

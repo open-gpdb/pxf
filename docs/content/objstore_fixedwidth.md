@@ -175,7 +175,7 @@ Writable external tables that you create using the `<objstore>:fixedwidth` profi
 This example utilizes the data schema introduced in [Example: Reading Fixed-Width Text Data on S3](#fixedwidth_read_example). 
 
 | Column Name  | Width | Data Type |
-|-------|-------------------------------------|
+|---|---|---|
 | location | 15 | text |
 | month | 4 | text |
 | number_of_orders | 6 | int |

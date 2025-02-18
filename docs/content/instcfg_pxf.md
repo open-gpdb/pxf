@@ -19,7 +19,7 @@ To configure PXF, you must:
         export JAVA_HOME=/usr/lib/jvm/jre
         ```
 
-1. Register the PXF extension with Greenplum Database (see [pxf cluster register](ref/pxf-cluster.html)). Run this command after your first installation of a PXF version 6.x, and/or after you upgrade your Greenplum Database installation:
+1. Register the PXF extension with Greenplum Database (see [pxf cluster register](ref/pxf-cluster)). Run this command after your first installation of a PXF version 6.x, and/or after you upgrade your Greenplum Database installation:
 
     ``` shell
     gpadmin@coordinator$ pxf cluster register

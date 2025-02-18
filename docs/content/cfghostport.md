@@ -4,8 +4,8 @@ title: Service Listen Address, Host, and Port
 
 In the default deployment topology, since PXF 6.7.0, the PXF Service starts on a Greenplum host and listens on `localhost:5888`. With this configuration, the PXF Service listens for local traffic on the Greenplum host. You can configure PXF to listen on a different listen address. You can also configure PXF to listen on a different port number, or to run on a different host. To change the default configuration, you set one or more of the properties identified below:
 
-|   Property |  Type | Description      | Default |
-|-------------------------|-------------------|-----|
+| Property | Type | Description | Default |
+| --- | --- | --- | --- |
 |   server.address  | `pxf-application.properties` property | The PXF server listen address. | `localhost`  |
 |   PXF_HOST  | Environment variable | The name or IP address of the (non-Greenpum) host on which the PXF Service is running. | `localhost`  |
 |   PXF_PORT  | Environment variable | The port number on which the PXF server listens for requests on the host. | `5888`  |
