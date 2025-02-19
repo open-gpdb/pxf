@@ -73,7 +73,7 @@ When auto-terminate is activated and the PXF JVM detects an OOM condition and te
     ... Failed to connect to <host> port 5888: Connection refused
     ```
 
-**When the PXF Service on a host is shut down in this manner, you must explicitly restart the PXF Service on the host.** See the [pxf](ref/pxf) reference page for more information on the `pxf start` command.
+**When the PXF Service on a host is shut down in this manner, you must explicitly restart the PXF Service on the host.** See the [pxf](ref/pxf.html) reference page for more information on the `pxf start` command.
 
 Refer to the configuration [procedure](#pxf-cfgoom_proc) below for the instructions to deactivate/activate this PXF configuration property.
  

@@ -39,7 +39,7 @@ The `pxf cluster` utility command manages PXF on the coordinator host, standby c
 
 `pxf cluster` requires a running Greenplum Database cluster. You must run the utility on the Greenplum Database coordinator host.
 
-If you want to manage the PXF Service instance on a specific segment host, use the `pxf` utility. See [`pxf`](pxf#topic1).
+If you want to manage the PXF Service instance on a specific segment host, use the `pxf` utility. See [`pxf`](pxf.html#topic1).
 
 ## <a id="commands"></a>Commands
 
@@ -100,4 +100,4 @@ $ pxf cluster sync --delete
 
 ## <a id="topic1__section6"></a>See Also
 
-[`pxf`](pxf#topic1)
+[`pxf`](pxf.html#topic1)
