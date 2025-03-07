@@ -11,11 +11,11 @@ RUN apt-get update && \
     git
 
 # install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
+#RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 # install JDK
-RUN apt-get install --yes --no-install-recommends --no-install-suggests \
-    openjdk-11-jdk-headless
+#RUN apt-get install --yes --no-install-recommends --no-install-suggests \
+#    openjdk-11-jdk-headless
 
 # install PXF build dependencies:
 RUN apt-get install --yes --no-install-recommends --no-install-suggests \

@@ -13,13 +13,11 @@ RUN apt-get update && \
     git
 
 # Install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz && \
-	export PATH="/usr/local/go/bin:$PATH" && \
-	go version
+#RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 # install JDK
-RUN apt-get install --yes --no-install-recommends --no-install-suggests \
-    openjdk-11-jdk-headless
+#RUN apt-get install --yes --no-install-recommends --no-install-suggests \
+#    openjdk-11-jdk-headless
 
 # https://github.com/open-gpdb/gpdb/blob/OPENGPDB_STABLE/README.ubuntu.bash (kind of)
 RUN apt-get install  --yes --no-install-recommends --no-install-suggests \
@@ -67,18 +65,12 @@ RUN locale-gen en_US.utf8 \
  && wget -c https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.1.tar.gz -O - | tar -xz \
  && cd xerces-c-3.1.1 && ./configure && make -j$(nproc) > /dev/null && make -j$(nproc) install
 
+# fetch & build greenplum
 WORKDIR /usr/local
 RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --branch 6.25.1 --depth 1
-RUN #wget -qO- https://github.com/open-gpdb/gpdb/archive/refs/tags/6.27.5.tar.gz | tar xz \
-#    && mv gpdb-6.27.5 /usr/local/gpdb_src
-
-#RUN sed -i 's/apt-get install/DEBIAN_FRONTEND=noninteractive apt-get install/g' ./gpdb_src/README.ubuntu.bash \
-#    && ./gpdb_src/README.ubuntu.bash \
-#    && ./gpdb_src/concourse/scripts/setup_gpadmin_user.bash
-RUN ./gpdb_src/concourse/scripts/setup_gpadmin_user.bash
 
 WORKDIR /usr/local/gpdb_src
-RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --without-mdblocales --prefix=/opt/greenplum-db-dev > /dev/null \
+RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-dev > /dev/null \
  && make -j$(nproc) > /dev/null \
  && make -j$(nproc) install > /dev/null \
  && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig
@@ -87,5 +79,5 @@ COPY . /usr/local/pxf_src
 # Build PXF:
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-dev/greenplum_path.sh \
- && SKIP_FDW_BUILD_REASON="security" make \
+ && export PATH="/usr/local/go/bin:$PATH" \
  && make extensions

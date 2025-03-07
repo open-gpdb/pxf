@@ -11,10 +11,8 @@ RUN apt-get update && \
     wget \
     git
 
-# Install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz && \
-	export PATH="/usr/local/go/bin:$PATH" && \
-	go version
+# install golang
+RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 # install JDK
 RUN apt-get install --yes --no-install-recommends --no-install-suggests \
@@ -72,11 +70,6 @@ RUN apt-get install --yes --no-install-recommends --no-install-suggests \
 
 WORKDIR /usr/local
 
-#WORKDIR /usr/local/xerces_src
-#RUN locale-gen en_US.utf8 \
-# && wget -c https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.1.tar.gz -O - | tar -xz \
-# && cd xerces-c-3.1.1 && ./configure && make > /dev/null && make install
-
 RUN locale-gen en_US.utf8 \
  && apt-get install --yes --no-install-recommends --no-install-suggests \
     libxerces-c-dev
@@ -89,11 +82,6 @@ RUN wget -qO-  https://github.com/apache/cloudberry/archive/refs/tags/1.6.0.tar.
 COPY . /usr/local/pxf_src
 
 
-#RUN #sed -i 's/apt-get install/DEBIAN_FRONTEND=noninteractive apt-get install/g' ./gpdb_src/README.ubuntu.bash \
-#    && ./gpdb_src/README.ubuntu.bash \
-#    && ./gpdb_src/concourse/scripts/setup_gpadmin_user.bash
-
-
 WORKDIR /usr/local/gpdb_src
 RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-cb > /dev/null \
  && make -j$(nproc) > /dev/null \
@@ -103,5 +91,5 @@ RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --di
 # Build PXF:
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-cb/greenplum_path.sh \
- && SKIP_FDW_BUILD_REASON="security" make \
+ && export PATH="/usr/local/go/bin:$PATH" \
  && make extensions
