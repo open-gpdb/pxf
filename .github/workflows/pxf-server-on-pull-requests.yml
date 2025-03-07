@@ -1,4 +1,4 @@
-name: pxf
+name: pxf-server
 on:
   push:
     paths:
