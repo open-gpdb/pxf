@@ -104,4 +104,4 @@ RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --di
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-cb/greenplum_path.sh \
  && SKIP_FDW_BUILD_REASON="security" make \
- && make install
+ && make extensions

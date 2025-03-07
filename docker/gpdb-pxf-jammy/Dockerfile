@@ -36,4 +36,4 @@ COPY . /usr/local/pxf_src
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-6/greenplum_path.sh \
  && export PATH="/usr/local/go/bin:$PATH" \
- && make install
+ && make extensions
