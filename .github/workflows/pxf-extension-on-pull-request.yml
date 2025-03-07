@@ -18,5 +18,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: run docker build
-        working-directory: ./server
         run: docker build -f 'docker/${{ matrix.builds }}/Dockerfile'  .
