@@ -28,13 +28,12 @@ WORKDIR /root/
 RUN wget https://github.com/open-gpdb/gpdb/releases/download/6.6.6-tmptag/greenplum-db-6_6.0.0--yandex.1.a09da17_amd64.deb \
  && apt -o Apt::Get::Assume-Yes=true install ./greenplum-db-6_6.0.0--yandex.1.a09da17_amd64.deb
 
+# add unicode support
+RUN locale-gen en_US.utf8
 
 # copy source & build PXF:
 COPY . /usr/local/pxf_src
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-6/greenplum_path.sh \
  && export PATH="/usr/local/go/bin:$PATH" \
- && SKIP_FDW_BUILD_REASON="security" make \
- && make install-server
-
- # PROFIT???
+ && make install

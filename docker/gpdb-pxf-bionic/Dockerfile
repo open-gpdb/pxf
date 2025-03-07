@@ -88,6 +88,4 @@ COPY . /usr/local/pxf_src
 WORKDIR /usr/local/pxf_src
 RUN source /opt/greenplum-db-dev/greenplum_path.sh \
  && SKIP_FDW_BUILD_REASON="security" make \
- && make install-server
-
- # PROFIT???
+ && make install
