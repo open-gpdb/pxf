@@ -25,8 +25,8 @@ RUN apt-get install --yes --no-install-recommends --no-install-suggests \
 
 # install greenplum for jammy:
 WORKDIR /root/
-RUN wget https://github.com/open-gpdb/gpdb/releases/download/6.6.6-tmptag/greenplum-db-6_6.0.0--yandex.1.a09da17_amd64.deb \
- && apt -o Apt::Get::Assume-Yes=true install ./greenplum-db-6_6.0.0--yandex.1.a09da17_amd64.deb
+RUN wget https://github.com/open-gpdb/gpdb/releases/download/6.28.2/greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb \
+ && apt -o Apt::Get::Assume-Yes=true install ./greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb
 
 # add unicode support
 RUN locale-gen en_US.utf8
