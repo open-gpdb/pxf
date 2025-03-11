@@ -1,0 +1,3 @@
+debian/build/gp/pxf/* /opt/greenplum-pxf-6
+debian/build/gp/lib/postgresql/pxf.so /opt/greenplum-db-6/lib/postgresql
+debian/build/gp/share/postgresql/extension/pxf* /opt/greenplum-db-6/share/postgresql/extension

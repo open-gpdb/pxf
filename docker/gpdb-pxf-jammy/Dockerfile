@@ -1,6 +1,6 @@
 FROM ubuntu:jammy
 
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND noninteractive
 
 # networking

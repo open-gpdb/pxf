@@ -1,0 +1,62 @@
+Source: greenplum-pxf-6
+Section: database
+Maintainer: <ostinru@localhost>
+Build-Depends: debhelper (>=9),
+    bison,
+    ca-certificates-java,
+    ca-certificates,
+    cmake,
+    curl,
+    cgroup-tools,
+    flex,
+    gcc-6,
+    g++-6,
+    g++-6-multilib,
+    git,
+    krb5-multidev,
+    libapr1-dev,
+    libbz2-dev,
+    libcurl4-gnutls-dev,
+    libevent-dev,
+    libkrb5-dev,
+    libldap2-dev,
+    libperl-dev,
+    libreadline6-dev,
+    libssl-dev,
+    libxml2-dev,
+    libyaml-dev,
+    libzstd-dev,
+    libaprutil1-dev,
+    libpam0g-dev,
+    libpam0g,
+    libcgroup1,
+    libyaml-0-2,
+    libldap-2.4-2,
+    libssl1.1,
+    make,
+    ninja-build,
+    openjdk-11-jdk,
+    openjdk-11-jre,
+    python-dev,
+    python-setuptools,
+    unzip,
+    wget,
+    zlib1g-dev
+
+Package: greenplum-pxf-6
+Architecture: amd64
+Depends: ca-certificates-java,
+  openjdk-11-jdk,
+  openjdk-11-jre,
+  greenplum-db-6,
+  curl,
+  libcurl3-gnutls,
+  libcurl4
+Replaces: greenplum-pxf-5
+Breaks: greenplum-pxf-5
+Description: Greenplum PXF 6 OSS
+  The Greenplum Platform Extension Framework (PXF) provides parallel, high
+  throughput data access and federated queries across heterogeneous data
+  sources via built-in connectors that map a Greenplum Database external
+  table definition to an external data source. This Greenplum Database
+  extension is based on PXF from Apache HAWQ (incubating).

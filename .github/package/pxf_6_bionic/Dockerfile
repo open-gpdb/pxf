@@ -3,9 +3,10 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN apt-get update
+
 # FIXME: what about locales?
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends --no-install-suggests \
+RUN apt-get install --yes --no-install-recommends --no-install-suggests \
     ca-certificates \
     build-essential \
     locales \
@@ -13,12 +14,13 @@ RUN apt-get update && \
     git
 
 # Install golang
-#RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
+RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 # install JDK
-#RUN apt-get install --yes --no-install-recommends --no-install-suggests \
-#    openjdk-11-jdk-headless
+RUN apt-get install --yes --no-install-recommends --no-install-suggests \
+    openjdk-11-jdk-headless
 
+# Install Greenplum 6.x (no deb files available - build from source)
 # https://github.com/open-gpdb/gpdb/blob/OPENGPDB_STABLE/README.ubuntu.bash (kind of)
 RUN apt-get install  --yes --no-install-recommends --no-install-suggests \
       bison \
@@ -70,14 +72,38 @@ WORKDIR /usr/local
 RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --branch 6.25.1 --depth 1
 
 WORKDIR /usr/local/gpdb_src
-RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-dev > /dev/null \
+RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-6 > /dev/null \
  && make -j$(nproc) > /dev/null \
  && make -j$(nproc) install > /dev/null \
  && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig
 
-COPY . /usr/local/pxf_src
-# Build PXF:
-WORKDIR /usr/local/pxf_src
-RUN source /opt/greenplum-db-dev/greenplum_path.sh \
- && export PATH="/usr/local/go/bin:$PATH" \
- && make extensions
+#
+# build and package PXF
+#
+
+# add unicode support
+RUN locale-gen en_US.utf8
+# install devscripts
+RUN apt-get install -y python3 devscripts debhelper pbuilder reprepro equivs
+
+# copy source & create layout for packaging
+ENV PXF_PKG_VERSION 6.10.1
+COPY . /packaging/
+RUN cp -r /packaging/.github/package/pxf_6_jammy/debian /packaging/debian \
+ && cp /packaging/.github/package/package-deb.bash      /packaging/ \
+ && source /packaging/package-deb.bash \
+ && print_changelog > /packaging/debian/changelog
+
+# pxf will install binaries into GPHOME
+# but dpkg-buildpackage will not get files from /opt/greenplum-db-6
+RUN mkdir -p  /packaging/debian/build \
+ && ln -s /opt/greenplum-db-6 /packaging/debian/build/gp
+
+
+# dpkg-buildpackage will call make && make install (via debian/rules)
+RUN source /opt/greenplum-db-6/greenplum_path.sh \
+ && PATH="/usr/local/go/bin:$PATH" \
+    GPHOME="/opt/greenplum-db-6" \
+    PXF_HOME="/opt/greenplum-pxf-6" \
+    JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
+    dpkg-buildpackage -us -uc

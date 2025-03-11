@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+OWNER=root
+PXFVER=1
+PXFHOME=/opt/greenplum-pxf-${PXFVER}
+GPHOME=/opt/greenplum-db-1
+
+chown -R ${OWNER}:${OWNER} ${PXFHOME}
+chown    ${OWNER}:${OWNER} ${GPHOME}/lib/postgresql/pxf.so
+chown    ${OWNER}:${OWNER} ${GPHOME}/share/postgresql/extension/pxf*
+
+echo -en '\ntrusted = true' >> ${GPHOME}/share/postgresql/extension/pxf.control
