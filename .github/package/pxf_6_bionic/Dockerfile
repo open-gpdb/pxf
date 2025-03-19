@@ -3,22 +3,16 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
-
-# FIXME: what about locales?
-RUN apt-get install --yes --no-install-recommends --no-install-suggests \
-    ca-certificates \
-    build-essential \
-    locales \
-    wget \
-    git
+RUN apt-get update &&\
+    apt-get install --yes --no-install-recommends --no-install-suggests \
+        ca-certificates \
+        build-essential \
+        wget \
+        git \
+        python3 devscripts debhelper pbuilder reprepro equivs
 
 # Install golang
 RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
-
-# install JDK
-RUN apt-get install --yes --no-install-recommends --no-install-suggests \
-    openjdk-11-jdk-headless
 
 # Install Greenplum 6.x (no deb files available - build from source)
 # https://github.com/open-gpdb/gpdb/blob/OPENGPDB_STABLE/README.ubuntu.bash (kind of)
@@ -83,13 +77,11 @@ RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --di
 
 # add unicode support
 RUN locale-gen en_US.utf8
-# install devscripts
-RUN apt-get install -y python3 devscripts debhelper pbuilder reprepro equivs
 
 # copy source & create layout for packaging
 ENV PXF_PKG_VERSION 6.10.1
 COPY . /packaging/
-RUN cp -r /packaging/.github/package/pxf_6_jammy/debian /packaging/debian \
+RUN cp -r /packaging/devops/packaging/deb/pxf_6_jammy/debian /packaging/debian \
  && cp /packaging/.github/package/package-deb.bash      /packaging/ \
  && source /packaging/package-deb.bash \
  && print_changelog > /packaging/debian/changelog

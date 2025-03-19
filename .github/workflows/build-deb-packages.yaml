@@ -21,14 +21,6 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3 devscripts debhelper dupload git pbuilder ca-certificates reprepro debsigs
-          
-          # provision dupload.conf
-          cat >~/.dupload.conf <<EOF
-          package config;
-          
-          if [ "x${GIT_COMMIT_ID}" != "x" ]; then
-            git checkout ${GIT_COMMIT_ID}
-          fi
 
       - name: generate debian, Dockerfile, etc.
         run: |
