@@ -1,7 +1,7 @@
 FROM ubuntu:jammy
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \

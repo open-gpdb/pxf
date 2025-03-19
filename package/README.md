@@ -24,7 +24,7 @@ We use docker as clean build environment. Build is consists of two stages:
 /packaging/                - this repo
 /packaging/debian          - github/open-gpdb/gpdb_deb/
 /packaging/debian/build/gp - link to /opt/greenplum-db-<version>, pxf will install pxf.so here
-/packaging/gpdb-devops/    - github/open-gpdb/gpdb-devops
+/packaging/devops/         - github/open-gpdb/gpdb-devops
 
 `mk-build-deps` install build dependencies from debian/control file
 `dpkg-buildpackage -us -uc` - build debian package (`-uc -us` - without signing)
@@ -37,6 +37,7 @@ Resulitng deb files conists of:
 ## Debugging
 
 ```
+export BUILDX_EXPERIMENTAL=1
 docker buildx debug --on=error build  -f package/pxf_6_jammy/Dockerfile .
 ...
 BOOOM!

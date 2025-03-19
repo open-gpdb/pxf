@@ -1,7 +1,7 @@
 FROM ubuntu:jammy
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
@@ -10,44 +10,35 @@ RUN apt-get update && \
         git \
         python3 devscripts debhelper pbuilder reprepro equivs
 
-# install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
+# checkout cloudberry to /gpdb_src
+WORKDIR /
+RUN wget -qO-  https://github.com/apache/cloudberry/archive/refs/tags/1.6.0.tar.gz | tar xz \
+    && mv cloudberry-1.6.0 /gpdb_src
 
-# install greenplum for jammy:
-WORKDIR /root/
-RUN wget https://github.com/open-gpdb/gpdb/releases/download/6.28.2/greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb \
- && apt -o Apt::Get::Assume-Yes=true install ./greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb
+# checkout this repository to /pxf_src
+COPY . /pxf_src
 
-#
-# build and package PXF
-#
+# install CBDB build dependencies from debian/control
+RUN mk-build-deps --build-dep \
+    --install \
+    --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
+    /pxf_src/devops/packaging/deb/cbdb_jammy/debian/control
 
-# add unicode support
-RUN locale-gen en_US.utf8
+# install missing parts
+RUN tar -xzf /pxf_src/downloads/xerces-c-3.3.0.tar.gz && \
+    cd xerces-c-3.1.1 && \
+    ./configure && \
+    make -j$(nproc) > /dev/null && \
+    make -j$(nproc) install
 
-# copy source & create layout for packaging
-ENV PXF_PKG_VERSION 6.10.1
-COPY . /packaging/
-RUN git clone https://github.com/open-gpdb/gpdb-devops.git /packaging/gpdb-devops --single-branch --branch master --depth 1 \
- && cp -r /packaging/gpdb-devops/packaging/deb/pxf_6_jammy/debian /packaging/debian \
- && cp /packaging/.github/package/package-deb.bash /packaging/ \
- && source /packaging/package-deb.bash \
- && print_changelog > /packaging/debian/changelog
+# FIXME: use https://github.com/apache/cloudberry-devops-release
 
-# pxf will install binaries into GPHOME
-# but dpkg-buildpackage will not get files from /opt/greenplum-db-6
-RUN mkdir -p  /packaging/debian/build \
- && ln -s /opt/greenplum-db-6 /packaging/debian/build/gp
+# create folder structure:
+RUN cp -rv /pxf_src/devops/packaging/deb/cbdb_jammy/debian /gpdb_src/
+WORKDIR /gpdb_src
+#RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-cb > /dev/null \
+# && make -j$(nproc) > /dev/null \
+# && make install \
+# && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig
 
-WORKDIR /packaging/
-# install PXF build dependencies from debian/control
-RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
-
-
-# dpkg-buildpackage will call make && make install (via debian/rules)
-RUN source /opt/greenplum-db-6/greenplum_path.sh \
- && PATH="/usr/local/go/bin:$PATH" \
-    GPHOME="/opt/greenplum-db-6" \
-    PXF_HOME="/opt/greenplum-pxf-6" \
-    JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
-    dpkg-buildpackage -us -uc
+RUN dpkg-buildpackage -us -uc
