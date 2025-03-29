@@ -3,16 +3,22 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND noninteractive
 
+# Filesystem layout:
+#   /pxf_src/downloads         - this repo's cache directory
+#   /pxf_src/devops            - github/open-gpdb/gpdb-devops git submodule
+#   /gpdb_src/                 - github/open-gpdb/gpdb
+#   /gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
+#   /gpdb_src/debian/build     - build destination for open-gpdb build
+
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
         python3 devscripts debhelper pbuilder reprepro equivs \
-        sudo wget git
+        sudo wget git locales
 
 # checkout greenplum to /gpdb_src
 WORKDIR /
-# --branch OPENGPDB_STABLE
-RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --branch YGP_6.27_STABLE --depth 1
+RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --branch OPENGPDB_STABLE --depth 1
 
 # checkout this repository to /pxf_src
 COPY . /pxf_src/
@@ -37,11 +43,18 @@ RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && 
     chmod +x /pxf_src/devops/scripts/build-deb.sh
 
 ENV SRC_DIR="/gpdb_src"
-ENV BUILD_DESTINATION="/pxf_src/devops/packaging/deb/gpdb_bionic/debian/build"
-ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca"
+ENV BUILD_DESTINATION="/gpdb_src/debian/build"
+ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca --disable-yezzey"
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh
-RUN /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh
+# we should run `/pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh`
+# but it tries to build contribs as well... but we don't need it (and it fails to compile)
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+RUN make -j$(nproc) \
+     && make -j$(nproc) install
 RUN /pxf_src/devops/scripts/build-deb.sh
 
 # get your packages in

@@ -3,6 +3,13 @@ FROM ubuntu:jammy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND="noninteractive"
 
+# Filesystem layout:
+#   /pxf_src/downloads         - this repo's cache directory
+#   /pxf_src/devops            - github/open-gpdb/gpdb-devops git submodule
+#   /gpdb_src/                 - github/open-gpdb/gpdb
+#   /gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
+#   /gpdb_src/debian/build     - build destination for open-gpdb build
+
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
@@ -39,7 +46,7 @@ RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && 
     chmod +x /pxf_src/devops/scripts/build-deb.sh
 
 ENV SRC_DIR="/gpdb_src"
-ENV BUILD_DESTINATION="/pxf_src/devops/packaging/deb/jammy/debian/build"
+ENV BUILD_DESTINATION="/gpdb_src/debian/build"
 ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca --disable-yezzey"
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh

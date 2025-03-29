@@ -3,6 +3,13 @@ FROM ubuntu:jammy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND="noninteractive"
 
+# Filesystem layout:
+#   /pxf_src/downloads         - this repo's cache directory
+#   /pxf_src/devops            - github/open-gpdb/gpdb-devops git submodule
+#   /gpdb_src/                 - github/apache/cloudberry
+#   /gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
+#   /gpdb_src/debian/build     - build destination for open-gpdb build
+
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
