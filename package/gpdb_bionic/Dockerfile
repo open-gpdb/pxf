@@ -10,6 +10,9 @@ ENV DEBIAN_FRONTEND noninteractive
 #   /gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
 #   /gpdb_src/debian/build     - build destination for open-gpdb build
 
+# enable source repositories on github actions
+RUN sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
+
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
@@ -24,7 +27,6 @@ RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --b
 COPY . /pxf_src/
 
 # install GPDB build dependencies from debian/control
-RUN cat /etc/apt/sources.list
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
