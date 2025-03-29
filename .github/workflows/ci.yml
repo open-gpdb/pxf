@@ -18,17 +18,19 @@ jobs:
           - 'deb-gpdb-jammy'
           - 'deb-cbdb-jammy'
     steps:
-      - name: Docker images caching
+      - name: database deb files caching
         id: cache-debs
         uses: actions/cache@v4
         with:
           path: ./downloads/*.deb
           # save per-os with 7 days TTL
           key: ${{ runner.os }}-${{ matrix.target }}
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           submodules: true
+
       - name: Build open-gpdb / cloudberry
         if: steps.cache-debs.outputs.cache-hit != 'true'
         run: make -f package/Makefile ${{ matrix.target }}
@@ -41,19 +43,24 @@ jobs:
       fail-fast: false
       matrix:
         target: # make targets
-          - 'deb-pxf6-gpdb-bionic'
-          - 'deb-pxf6-gpdb-jammy'
-          - 'deb-pxf6-cbdb-jammy'
+          - pxf: 'deb-pxf6-gpdb-bionic'
+            db-cache-key-sfx: 'deb-gpdb-bionic'
+          - pxf: 'deb-pxf6-gpdb-jammy'
+            db-cache-key-sfx: 'deb-gpdb-jammy'
+          - pxf: 'deb-pxf6-cbdb-jammy'
+            db-cache-key-sfx: 'deb-cbdb-jammy'
     steps:
-      - name: Docker images caching
+      - name: (restore) database deb files caching
         id: cache-debs
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
+          fail-on-cache-miss: true
           path: ./downloads/*.deb
-          # save per-os with 7 days TTL
-          key: ${{ runner.os }}-${{ matrix.target }}
+          key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}
+
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Build open-gpdb / cloudberry
+
+      - name: Build PXF6
         if: steps.cache-debs.outputs.cache-hit != 'true'
-        run: make -f package/Makefile ${{ matrix.target }}
+        run: make -f package/Makefile ${{ matrix.target.pxf }}
