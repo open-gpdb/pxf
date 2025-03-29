@@ -27,6 +27,8 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.target }}
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Build open-gpdb / cloudberry
         if: steps.cache-debs.outputs.cache-hit != 'true'
         run: make -f package/Makefile ${{ matrix.target }}

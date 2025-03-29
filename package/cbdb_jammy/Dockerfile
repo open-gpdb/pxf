@@ -10,9 +10,6 @@ ENV DEBIAN_FRONTEND="noninteractive"
 #   /gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
 #   /gpdb_src/debian/build     - build destination for open-gpdb build
 
-# enable source repositories on github actions
-RUN sed -i 's/^# deb-src/deb-src/g' /etc/apt/sources.list
-
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
