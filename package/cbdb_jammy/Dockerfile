@@ -19,8 +19,7 @@ RUN apt-get update && \
 
 # checkout cloudberry to /gpdb_src
 WORKDIR /
-RUN wget -qO-  https://github.com/apache/cloudberry/archive/refs/tags/1.6.0.tar.gz | tar xz \
-    && mv cloudberry-1.6.0 /gpdb_src
+RUN git clone https://github.com/apache/cloudberry.git gpdb_src --single-branch --branch main --depth 1
 
 # checkout this repository to /pxf_src
 COPY . /pxf_src

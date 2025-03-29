@@ -11,6 +11,7 @@ jobs:
     name: Build open-gpdb Debian Packages
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         target: # make targets
           - 'deb-gpdb-bionic'
