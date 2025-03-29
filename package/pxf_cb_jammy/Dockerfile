@@ -15,8 +15,8 @@ RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/loca
 
 # install greenplum for jammy:
 WORKDIR /root/
-RUN wget https://github.com/open-gpdb/gpdb/releases/download/6.28.2/greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb \
- && apt -o Apt::Get::Assume-Yes=true install ./greenplum-db-6_28.1.0--yandex.1.59a66a1_amd64.deb
+COPY ./downloads/greenplum-db-cb_1.0.0-dev_amd64.deb greenplum-db-cb_1.0.0-dev_amd64.deb
+RUN apt -o Apt::Get::Assume-Yes=true install /root/greenplum-db-cb_1.0.0-dev_amd64.deb
 
 #
 # build and package PXF

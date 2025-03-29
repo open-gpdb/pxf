@@ -26,12 +26,14 @@ RUN mk-build-deps --build-dep \
 
 # install missing parts
 RUN tar -xzf /pxf_src/downloads/xerces-c-3.3.0.tar.gz && \
-    cd xerces-c-3.1.1 && \
+    cd xerces-c-3.3.0 && \
     ./configure && \
     make -j$(nproc) > /dev/null && \
     make -j$(nproc) install
 
 # FIXME: use https://github.com/apache/cloudberry-devops-release
+
+RUN cp -r /pxf_src/devops/packaging/deb/cbdb_jammy/debian /gpdb_src/
 
 WORKDIR /gpdb_src
 ENV BUILD_DESTINATION=/gpdb_src/debian/build
@@ -40,7 +42,11 @@ RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --di
 
 ENV GPDB_PKG_VERSION="1.0.0-dev"
 RUN dpkg-buildpackage -us -uc
-
 # get your packages in
-# /greenplum-db-cb_6.0.0-dev_amd64.deb
+# /greenplum-db-cb_1.0.0-dev_amd64.deb
 # /greenplum-db-cb_1.0.0.tar.xz
+
+RUN mkdir /build && \
+    cp /*.deb /build && \
+    cp /*.tar.* /build
+

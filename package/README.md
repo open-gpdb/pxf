@@ -19,12 +19,15 @@ We use docker as clean build environment. Build is consists of two stages:
 1. Build open-gpdb / cloudberry and save deb file to `downloads/`
 2. Build PXF using deb file from `downloads/` and save resulting deb to `downloads/`
 
-## PXF DEB specification
+## GP/PXF DEB specification
 
-/packaging/                - this repo
-/packaging/debian          - github/open-gpdb/gpdb_deb/
-/packaging/debian/build/gp - link to /opt/greenplum-db-<version>, pxf will install pxf.so here
-/packaging/devops/         - github/open-gpdb/gpdb-devops
+/gpdb_src/                 - github/open-gpdb/gpdb
+/gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
+/gpdb_src/debian/build     - build destination for open-gpdb build
+
+/pxf_src/                  - this repo
+/pxf_src/devops            - git submodule github/open-gpdb/gpdb-devops
+/pxf_src/debian/build/gp   - link to /opt/greenplum-db-<version>, pxf will install pxf.so here
 
 `mk-build-deps` install build dependencies from debian/control file
 `dpkg-buildpackage -us -uc` - build debian package (`-uc -us` - without signing)
