@@ -62,5 +62,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build PXF6
-        if: steps.cache-debs.outputs.cache-hit != 'true'
         run: make -f package/Makefile ${{ matrix.target.pxf }}
