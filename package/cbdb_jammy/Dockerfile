@@ -25,6 +25,7 @@ RUN git clone https://github.com/apache/cloudberry.git gpdb_src --single-branch 
 COPY . /pxf_src
 
 # install CBDB build dependencies from debian/control
+RUN cat /etc/apt/sources.list
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \

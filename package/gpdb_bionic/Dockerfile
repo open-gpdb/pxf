@@ -24,6 +24,7 @@ RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --b
 COPY . /pxf_src/
 
 # install GPDB build dependencies from debian/control
+RUN cat /etc/apt/sources.list
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
