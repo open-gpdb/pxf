@@ -9,20 +9,34 @@ User documentation
 ================
 The PXF user documentation is available at [PXF Documentation](https://open-gpdb.github.io/pxf/).
 
-This project is forked from [greenplum/pxf](https://github.com/greenplum-db/pxf-archive) and customized for Open-GPDB.
-
 Repository Contents
 ================
-* `external-table/` : Contains the Greenplum extension implementing an External Table protocol handler
-* `fdw/` : Contains the Greenplum extension implementing a Foreign Data Wrapper (FDW) for PXF
-* `server/` : Contains the server side code of PXF along with the PXF Service and all the Plugins
-* `cli/` : Contains command line interface code for PXF
-* `automation/` : Contains the automation and integration tests for PXF against the various datasources
-* `singlecluster/` : Hadoop testing environment to exercise the pxf automation tests
-* `concourse/` : Resources for PXF's Continuous Integration pipelines
-* `regression/` : Contains the end-to-end (integration) tests for PXF against the various datasources, utilizing the PostgreSQL testing framework `pg_regress`
-* `downloads/` : An empty directory that serves as a staging location for Greenplum DEBs/RPMs for the development Docker image
-* `devops/` : Contains packaging scripts for PXF
+## external-table/
+Contains the Greenplum extension implementing an External Table protocol handler
+
+## fdw/
+Contains the Greenplum extension implementing a Foreign Data Wrapper (FDW) for PXF
+
+## server/
+Contains the server side code of PXF along with the PXF Service and all the Plugins
+
+## cli/
+Contains command line interface code for PXF
+
+## automation/
+Contains the automation and integration tests for PXF against the various datasources
+
+## singlecluster/
+Hadoop testing environment to exercise the pxf automation tests
+
+## concourse/
+Resources for PXF's Continuous Integration pipelines
+
+## regression/
+Contains the end-to-end (integration) tests for PXF against the various datasources, utilizing the PostgreSQL testing framework `pg_regress`
+
+## downloads/
+An empty directory that serves as a staging location for Greenplum RPMs for the development Docker image
 
 PXF Development
 =================
