@@ -18,13 +18,16 @@ jobs:
           - 'deb-gpdb-jammy'
           - 'deb-cbdb-jammy'
     steps:
+      - name: Get Date
+        id: get-date
+        run: echo "week=$(/bin/date -u '+%U')" >> "$GITHUB_OUTPUT"
       - name: database deb files caching
         id: cache-debs
         uses: actions/cache@v4
         with:
           path: ./downloads/*.deb
           # save per-os with 7 days TTL
-          key: ${{ runner.os }}-${{ matrix.target }}
+          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.get-date.outputs.week }}
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,7 +36,7 @@ jobs:
 
       - name: Build open-gpdb / cloudberry
         if: steps.cache-debs.outputs.cache-hit != 'true'
-        run: make -f package/Makefile ${{ matrix.target }}
+        run: make -C package ${{ matrix.target }}
 
   build_pxf_debs:
     name: Build PXF Debian Packages
@@ -50,16 +53,19 @@ jobs:
           - pxf: 'deb-pxf6-cbdb-jammy'
             db-cache-key-sfx: 'deb-cbdb-jammy'
     steps:
+      - name: Get Date
+        id: get-date
+        run: echo "week=$(/bin/date -u '+%U')" >> "$GITHUB_OUTPUT"
       - name: (restore) database deb files caching
         id: cache-debs
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ./downloads/*.deb
-          key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}
+          key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}-${{ steps.get-date.outputs.week }}
 
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Build PXF6
-        run: make -f package/Makefile ${{ matrix.target.pxf }}
+        run: make -C package ${{ matrix.target.pxf }}

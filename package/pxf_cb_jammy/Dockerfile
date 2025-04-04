@@ -13,10 +13,9 @@ RUN apt-get update && \
 # install golang
 RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
-# install greenplum for jammy:
-WORKDIR /root/
-COPY ./downloads/greenplum-db-cb_1.0.0-dev_amd64.deb greenplum-db-cb_1.0.0-dev_amd64.deb
-RUN apt -o Apt::Get::Assume-Yes=true install /root/greenplum-db-cb_1.0.0-dev_amd64.deb
+# install greenplum:
+COPY . /pxf_src/
+RUN apt -o Apt::Get::Assume-Yes=true install /pxf_src/downloads/greenplum-db-cb_1.0.0-dev_amd64.deb
 
 #
 # build and package PXF
@@ -26,28 +25,32 @@ RUN apt -o Apt::Get::Assume-Yes=true install /root/greenplum-db-cb_1.0.0-dev_amd
 RUN locale-gen en_US.utf8
 
 # copy source & create layout for packaging
-ENV PXF_PKG_VERSION 6.10.1
+ENV PXF_PKG_VERSION 1.0.0
 COPY . /packaging/
-RUN git clone https://github.com/open-gpdb/gpdb-devops.git /packaging/gpdb-devops --single-branch --branch master --depth 1 \
- && cp -r /packaging/gpdb-devops/packaging/deb/pxf_6_jammy/debian /packaging/debian \
- && cp /packaging/.github/package/package-deb.bash /packaging/ \
- && source /packaging/package-deb.bash \
- && print_changelog > /packaging/debian/changelog
+RUN cp -r /pxf_src/devops/packaging/deb/pxf_cb_jammy/debian /pxf_src/debian \
+ && source /pxf_src/package/package-deb.bash \
+ && print_changelog > /pxf_src/debian/changelog
 
 # pxf will install binaries into GPHOME
 # but dpkg-buildpackage will not get files from /opt/greenplum-db-6
-RUN mkdir -p  /packaging/debian/build \
- && ln -s /opt/greenplum-db-6 /packaging/debian/build/gp
+RUN mkdir -p  /pxf_src/debian/build \
+ && ln -s /opt/greenplum-db-6 /pxf_src/debian/build/gp
 
-WORKDIR /packaging/
+WORKDIR /pxf_src/
 # install PXF build dependencies from debian/control
 RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
 
 
 # dpkg-buildpackage will call make && make install (via debian/rules)
-RUN source /opt/greenplum-db-6/greenplum_path.sh \
+RUN source /opt/greenplum-db-cb/greenplum_path.sh \
  && PATH="/usr/local/go/bin:$PATH" \
-    GPHOME="/opt/greenplum-db-6" \
-    PXF_HOME="/opt/greenplum-pxf-6" \
+    GPHOME="/opt/greenplum-db-cb" \
+    PXF_HOME="/opt/greenplum-pxf-1" \
     JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
     dpkg-buildpackage -us -uc
+
+# get your packages in
+# /greenplum-pxf-1_6.10.1_amd64.deb
+RUN mkdir /build && \
+    cp /*.deb /build && \
+    cp /*.tar.* /build

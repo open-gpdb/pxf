@@ -55,6 +55,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 RUN make -j$(nproc) \
      && make -j$(nproc) install
+ENV GPDB_PKG_VERSION="6.0.0-bionic-dev"
 RUN /pxf_src/devops/scripts/build-deb.sh
 
 # get your packages in

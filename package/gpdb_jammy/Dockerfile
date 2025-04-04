@@ -26,7 +26,6 @@ RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --b
 COPY . /pxf_src/
 
 # install GPDB build dependencies from debian/control
-RUN cat /etc/apt/sources.list
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
@@ -52,6 +51,7 @@ ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca --
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh
 RUN /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh
+ENV GPDB_PKG_VERSION="6.0.0-jammy-dev"
 RUN /pxf_src/devops/scripts/build-deb.sh
 
 # get your packages in

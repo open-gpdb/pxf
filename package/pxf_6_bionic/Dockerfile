@@ -14,62 +14,8 @@ RUN apt-get update &&\
 # Install golang
 RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
-# Install Greenplum 6.x (no deb files available - build from source)
-# https://github.com/open-gpdb/gpdb/blob/OPENGPDB_STABLE/README.ubuntu.bash (kind of)
-RUN apt-get install  --yes --no-install-recommends --no-install-suggests \
-      bison \
-      ccache \
-      cmake \
-      curl \
-      flex \
-      git-core \
-      gcc-8 \
-      g++-8 \
-      inetutils-ping \
-      krb5-kdc \
-      krb5-admin-server \
-      libapr1-dev \
-      libbz2-dev \
-      libcurl4-gnutls-dev \
-      libevent-dev \
-      libkrb5-dev \
-      libpam-dev \
-      libperl-dev \
-      libreadline-dev \
-      libssl-dev \
-      libxml2-dev \
-      libyaml-dev \
-      libzstd-dev \
-      locales \
-      net-tools \
-      ninja-build \
-      openssh-client \
-      openssh-server \
-      openssl \
-      python-dev \
-      python-pip \
-      python3-pip \
-      python-psutil \
-      python-yaml \
-      zlib1g-dev \
-      libpstreams-dev \
-      python-setuptools \
-  && pip install conan
-
-WORKDIR /usr/local/xerces_src
-RUN locale-gen en_US.utf8 \
- && wget -c https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.1.tar.gz -O - | tar -xz \
- && cd xerces-c-3.1.1 && ./configure && make -j$(nproc) > /dev/null && make -j$(nproc) install
-
-# fetch & build greenplum
-WORKDIR /usr/local
-RUN git clone https://github.com/open-gpdb/gpdb.git gpdb_src --single-branch --branch 6.25.1 --depth 1
-
-WORKDIR /usr/local/gpdb_src
-RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=/opt/greenplum-db-6 > /dev/null \
- && make -j$(nproc) > /dev/null \
- && make -j$(nproc) install > /dev/null \
- && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig
+COPY . /pxf_src/
+RUN apt -o Apt::Get::Assume-Yes=true install /pxf_src/downloads/greenplum-db-6_6.0.0-bionic-dev_amd64.deb
 
 #
 # build and package PXF
@@ -79,18 +25,19 @@ RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --di
 RUN locale-gen en_US.utf8
 
 # copy source & create layout for packaging
-ENV PXF_PKG_VERSION 6.10.1
-COPY . /packaging/
-RUN cp -r /packaging/devops/packaging/deb/pxf_6_jammy/debian /packaging/debian \
- && cp /packaging/.github/package/package-deb.bash      /packaging/ \
- && source /packaging/package-deb.bash \
- && print_changelog > /packaging/debian/changelog
+ENV PXF_PKG_VERSION "6.10.1-jammy"
+RUN cp -r /pxf_src/devops/packaging/deb/pxf_6_bionic/debian /pxf_src/debian \
+ && source /pxf_src/package/package-deb.bash \
+ && print_changelog > /pxf_src/debian/changelog
 
 # pxf will install binaries into GPHOME
 # but dpkg-buildpackage will not get files from /opt/greenplum-db-6
-RUN mkdir -p  /packaging/debian/build \
- && ln -s /opt/greenplum-db-6 /packaging/debian/build/gp
+RUN mkdir -p  /pxf_src/debian/build \
+ && ln -s /opt/greenplum-db-6 /pxf_src/debian/build/gp
 
+WORKDIR /pxf_src/
+# install PXF build dependencies from debian/control
+RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
 
 # dpkg-buildpackage will call make && make install (via debian/rules)
 RUN source /opt/greenplum-db-6/greenplum_path.sh \
@@ -99,3 +46,9 @@ RUN source /opt/greenplum-db-6/greenplum_path.sh \
     PXF_HOME="/opt/greenplum-pxf-6" \
     JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
     dpkg-buildpackage -us -uc
+
+# get your packages in
+# /greenplum-pxf-6_6.10.1_amd64.deb
+RUN mkdir /build && \
+    cp /*.deb /build && \
+    cp /*.tar.* /build
