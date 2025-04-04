@@ -25,7 +25,7 @@ RUN apt -o Apt::Get::Assume-Yes=true install /pxf_src/downloads/greenplum-db-cb_
 RUN locale-gen en_US.utf8
 
 # copy source & create layout for packaging
-ENV PXF_PKG_VERSION 1.0.0
+ENV PXF_PKG_VERSION "1.0.0-jammy-dev"
 COPY . /packaging/
 RUN cp -r /pxf_src/devops/packaging/deb/pxf_cb_jammy/debian /pxf_src/debian \
  && source /pxf_src/package/package-deb.bash \
