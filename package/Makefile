@@ -17,37 +17,37 @@ download-xerces-c-3-1-1:
 deb-gpdb-bionic: DOCKER_TAG = deb-gpdb-bionic
 deb-gpdb-bionic: download-xerces-c-3-1-1
 	echo "===> Building open-gpdb for bionic <==="
-ifeq ($(shell test -f downloads/greenplum-db-6_6.0.0-bionic-dev_amd64.deb ; echo $$?),0)
+ifeq ($(shell test -f ../downloads/greenplum-db-6_6.0.0-bionic-dev_amd64.deb ; echo $$?),0)
+	@echo "Skipping build: we already have gpdb bionic build in downloads."
+else
 	docker build -f 'gpdb_bionic/Dockerfile' .. --tag ${DOCKER_TAG}:1.0
 	docker create --name extract-gpdb-bionic  ${DOCKER_TAG}:1.0
 	docker cp extract-gpdb-bionic:/build/. ../downloads/
 	docker rm extract-gpdb-bionic
-else
-	@echo "Skipping build: we already have gpdb bionic build in downloads."
 endif
 
 deb-gpdb-jammy: DOCKER_TAG = deb-gpdb-jammy
 deb-gpdb-jammy: download-xerces-c-3-1-1
 	echo "===> Building open-gpdb for jammy <==="
-ifeq ($(shell test -f downloads/greenplum-db-6_6.0.0-jammy-dev_amd64.deb ; echo $$?),0)
+ifeq ($(shell test -f ../downloads/greenplum-db-6_6.0.0-jammy-dev_amd64.deb ; echo $$?),0)
+	@echo "Skipping build: we already have gpdb jammy build in downloads."
+else
 	docker build -f 'gpdb_jammy/Dockerfile' .. --tag ${DOCKER_TAG}:1.0
 	docker create --name extract-gpdb-jammy ${DOCKER_TAG}:1.0
 	docker cp extract-gpdb-jammy:/build/. ../downloads/
 	docker rm extract-gpdb-jammy
-else
-	@echo "Skipping build: we already have gpdb jammy build in downloads."
 endif
 
 deb-cbdb-jammy: DOCKER_TAG = deb-cbdb-jammy
 deb-cbdb-jammy: download-xerces-c-3-3-0
 	echo "===> Building Cloudberry for jammy <==="
-ifeq ($(shell test -f downloads/greenplum-db-cb_1.0.0-dev_amd64.deb ; echo $$?),0)
+ifeq ($(shell test -f ../downloads/greenplum-db-cb_1.0.0-dev_amd64.deb ; echo $$?),0)
+	@echo "Skipping build: we already have cloudberry jammy build in downloads."
+else
 	docker build -f 'cbdb_jammy/Dockerfile' . --tag ${DOCKER_TAG}:1.0
 	docker create --name extract-cbdb-jammy ${DOCKER_TAG}:1.0
 	docker cp extract-cbdb-jammy:/build/. ../downloads/
 	docker rm extract-cbdb-jammy
-else
-	@echo "Skipping build: we already have cloudberry jammy build in downloads."
 endif
 
 #
