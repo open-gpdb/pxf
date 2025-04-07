@@ -44,7 +44,7 @@ deb-cbdb-jammy: download-xerces-c-3-3-0
 ifeq ($(shell test -f ../downloads/greenplum-db-cb_1.0.0-dev_amd64.deb ; echo $$?),0)
 	@echo "Skipping build: we already have cloudberry jammy build in downloads."
 else
-	docker build -f 'cbdb_jammy/Dockerfile' . --tag ${DOCKER_TAG}:1.0
+	docker build -f 'cbdb_jammy/Dockerfile' .. --tag ${DOCKER_TAG}:1.0
 	docker create --name extract-cbdb-jammy ${DOCKER_TAG}:1.0
 	docker cp extract-cbdb-jammy:/build/. ../downloads/
 	docker rm extract-cbdb-jammy
@@ -73,7 +73,7 @@ deb-pxf6-gpdb-jammy: deb-gpdb-jammy
 deb-pxf6-cbdb-jammy: DOCKER_TAG = deb-pxf6-cbdb-jammy
 deb-pxf6-cbdb-jammy: deb-cbdb-jammy
 	echo "===> Building PXF 6 for Cloudberry for jammy <==="
-	docker build -f 'pxf_cb_jammy/Dockerfile' . --tag ${DOCKER_TAG}:1.0
+	docker build -f 'pxf_cb_jammy/Dockerfile' .. --tag ${DOCKER_TAG}:1.0
 	docker create --name extract-pxf6-cbdb-jammy  ${DOCKER_TAG}:1.0
 	docker cp extract-pxf6-cbdb-jammy:/build/. ../downloads/
 	docker rm extract-pxf6-cbdb-jammy

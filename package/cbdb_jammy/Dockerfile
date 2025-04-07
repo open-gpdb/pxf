@@ -25,7 +25,6 @@ RUN git clone https://github.com/apache/cloudberry.git gpdb_src --single-branch 
 COPY . /pxf_src
 
 # install CBDB build dependencies from debian/control
-RUN cat /etc/apt/sources.list
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
@@ -44,7 +43,7 @@ RUN cp -r /pxf_src/devops/packaging/deb/cbdb_jammy/debian /gpdb_src/
 
 WORKDIR /gpdb_src
 ENV BUILD_DESTINATION=/gpdb_src/debian/build
-RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca  --prefix=${BUILD_DESTINATION}/opt/greenplum-db-cb \
+RUN ./configure --without-perl --without-python --with-libxml --with-gssapi --disable-orca --prefix=${BUILD_DESTINATION} \
  && make -j$(nproc) > /dev/null
 
 ENV GPDB_PKG_VERSION="1.0.0-dev"

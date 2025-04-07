@@ -29,12 +29,12 @@ ENV PXF_PKG_VERSION "1.0.0-jammy-dev"
 COPY . /packaging/
 RUN cp -r /pxf_src/devops/packaging/deb/pxf_cb_jammy/debian /pxf_src/debian \
  && source /pxf_src/package/package-deb.bash \
- && print_changelog > /pxf_src/debian/changelog
+ && print_cb_changelog > /pxf_src/debian/changelog
 
 # pxf will install binaries into GPHOME
 # but dpkg-buildpackage will not get files from /opt/greenplum-db-6
 RUN mkdir -p  /pxf_src/debian/build \
- && ln -s /opt/greenplum-db-6 /pxf_src/debian/build/gp
+ && ln -s /opt/greenplum-db-cb /pxf_src/debian/build/gp
 
 WORKDIR /pxf_src/
 # install PXF build dependencies from debian/control
