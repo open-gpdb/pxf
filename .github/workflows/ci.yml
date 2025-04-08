@@ -25,7 +25,9 @@ jobs:
         id: cache-debs
         uses: actions/cache@v4
         with:
-          path: ./downloads/*.deb
+          path: |
+            ./downloads/*.deb
+            ./downloads/*.tar.gz
           # save per-os with 7 days TTL
           key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.get-date.outputs.week }}
 
@@ -67,10 +69,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
-          path: ./downloads/*.deb
+          path: |
+            ./downloads/*.deb
+            ./downloads/*.tar.gz
           key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}-${{ steps.get-date.outputs.week }}
-      - name: list folder
-        run: ls -la ./downloads
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
