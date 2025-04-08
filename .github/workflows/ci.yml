@@ -56,6 +56,12 @@ jobs:
       - name: Get Date
         id: get-date
         run: echo "week=$(/bin/date -u '+%U')" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
       - name: (restore) database deb files caching
         id: cache-debs
         uses: actions/cache/restore@v4
@@ -63,11 +69,8 @@ jobs:
           fail-on-cache-miss: true
           path: ./downloads/*.deb
           key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}-${{ steps.get-date.outputs.week }}
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: true
+      - name: list folder
+        run: ls -la ./downloads
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
