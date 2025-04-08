@@ -66,6 +66,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
