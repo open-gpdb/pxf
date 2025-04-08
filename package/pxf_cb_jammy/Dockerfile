@@ -32,9 +32,9 @@ RUN cp -r /pxf_src/devops/packaging/deb/pxf_cb_jammy/debian /pxf_src/debian \
  && print_cb_changelog > /pxf_src/debian/changelog
 
 # pxf will install binaries into GPHOME
-# but dpkg-buildpackage will not get files from /opt/greenplum-db-6
+# but dpkg-buildpackage will not get files from /usr/cloudberry-db
 RUN mkdir -p  /pxf_src/debian/build \
- && ln -s /opt/greenplum-db-cb /pxf_src/debian/build/gp
+ && ln -s /usr/cloudberry-db /pxf_src/debian/build/gp
 
 WORKDIR /pxf_src/
 # install PXF build dependencies from debian/control
@@ -42,9 +42,9 @@ RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemRes
 
 
 # dpkg-buildpackage will call make && make install (via debian/rules)
-RUN source /opt/greenplum-db-cb/greenplum_path.sh \
+RUN source /usr/cloudberry-db/greenplum_path.sh \
  && PATH="/usr/local/go/bin:$PATH" \
-    GPHOME="/opt/greenplum-db-cb" \
+    GPHOME="/usr/cloudberry-db" \
     PXF_HOME="/opt/greenplum-pxf-1" \
     JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
     dpkg-buildpackage -us -uc
