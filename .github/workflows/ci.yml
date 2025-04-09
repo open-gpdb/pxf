@@ -79,4 +79,61 @@ jobs:
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
-#        continue-on-error: ${{ matrix.target.experimental }}
+
+      - name: (save) PXF debs in cache
+        uses: actions/cache/save@v4
+        id: cache
+        with:
+            path: |
+              ./downloads/*pxf*.deb
+            key: ${{ runner.os }}-${{ matrix.target.pxf }}-${{ github.sha }}
+
+  use_pxf_debs:
+    name: Build PXF Debian Packages
+    runs-on: ubuntu-latest
+    needs: [build_pxf_debs]
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - pxf: 'deb-pxf6-gpdb-bionic'
+            db-cache-key-sfx: 'deb-gpdb-bionic'
+            experimental: false
+          - pxf: 'deb-pxf6-gpdb-jammy'
+            db-cache-key-sfx: 'deb-gpdb-jammy'
+            experimental: false
+          - pxf: 'deb-pxf6-cbdb-jammy'
+            db-cache-key-sfx: 'deb-cbdb-jammy'
+            experimental: true
+    steps:
+      - name: Get Date
+        id: get-date
+        run: echo "week=$(/bin/date -u '+%U')" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: (restore) database deb files caching
+        id: cache-debs
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            ./downloads/*.deb
+          key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}-${{ steps.get-date.outputs.week }}
+
+      - name: (restore) PXF deb files caching
+        id: cache-debs
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            ./downloads/*.deb
+            ./downloads/*.tar.gz
+          key: ${{ runner.os }}-${{ matrix.target.pxf }}-${{ github.sha }}
+
+      - name: Use PXF builds
+        run: ls -lah ./downloads/
+        # TODO: add /regression and /automation tests here
