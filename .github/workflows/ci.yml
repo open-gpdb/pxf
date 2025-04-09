@@ -79,4 +79,4 @@ jobs:
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
-        continue-on-error: ${{ matrix.target.experimental }}
+#        continue-on-error: ${{ matrix.target.experimental }}
