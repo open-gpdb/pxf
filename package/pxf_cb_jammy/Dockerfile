@@ -8,7 +8,7 @@ RUN apt-get update && \
         ca-certificates \
         wget \
         git \
-        python3 devscripts debhelper pbuilder reprepro equivs
+        python3 devscripts debhelper pbuilder reprepro equivs quilt
 
 # install golang
 RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
@@ -45,7 +45,7 @@ RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemRes
 RUN source /usr/cloudberry-db/greenplum_path.sh \
  && PATH="/usr/local/go/bin:$PATH" \
     GPHOME="/usr/cloudberry-db" \
-    PXF_HOME="/opt/greenplum-pxf-1" \
+    PXF_HOME="/pxf_src/debian/build/gp/pxf" \
     JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64" \
     dpkg-buildpackage -us -uc
 

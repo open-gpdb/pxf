@@ -50,10 +50,13 @@ jobs:
         target: # make targets
           - pxf: 'deb-pxf6-gpdb-bionic'
             db-cache-key-sfx: 'deb-gpdb-bionic'
+            experimental: false
           - pxf: 'deb-pxf6-gpdb-jammy'
             db-cache-key-sfx: 'deb-gpdb-jammy'
+            experimental: false
           - pxf: 'deb-pxf6-cbdb-jammy'
             db-cache-key-sfx: 'deb-cbdb-jammy'
+            experimental: true
     steps:
       - name: Get Date
         id: get-date
@@ -76,3 +79,4 @@ jobs:
 
       - name: Build PXF6
         run: make -C package ${{ matrix.target.pxf }}
+        continue-on-error: ${{ matrix.target.experimental }}

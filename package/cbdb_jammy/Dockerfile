@@ -15,7 +15,7 @@ RUN apt-get update && \
         ca-certificates \
         wget \
         git \
-        python3 devscripts debhelper pbuilder reprepro equivs
+        python3 devscripts debhelper pbuilder reprepro equivs quilt
 
 # checkout cloudberry to /gpdb_src
 WORKDIR /

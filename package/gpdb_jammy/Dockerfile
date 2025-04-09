@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends --no-install-suggests \
         ca-certificates \
-        python3 devscripts debhelper pbuilder reprepro equivs \
+        python3 devscripts debhelper pbuilder reprepro equivs quilt \
         sudo wget git python2.7 python2.7-dev
 
 RUN ln -s /usr/bin/python2.7 /usr/bin/python
