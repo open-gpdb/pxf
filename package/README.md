@@ -10,8 +10,48 @@ PXF consists of 3 groups of artifacts, each developed using a different underlyi
 The PXF build system can create an RPM package on CentOs platform and a DEB package on Ubuntu platform,
 respectively. PXF compiles against and generates a different package for every major Greenplum version.
 
-For example, `pxf-gp5-1.2.3-1.el7.x86_64.rpm` represents an RPM package of PXF version 1.2.3 intended to work with
-Greenplum 5 on Centos / Redhat 7 operating systems.
+For example, `pxf-gp6-1.2.3-1.el7.x86_64.rpm` represents an RPM package of PXF version 1.2.3 intended to work with
+Greenplum 6 on Centos / Redhat 7 operating systems.
+
+# How it works
+
+We use docker as clean build environment. Build is consists of two stages:
+1. Build open-gpdb / cloudberry and save deb file to `downloads/`
+2. Build PXF using deb file from `downloads/` and save resulting deb to `downloads/`
+
+## GP/PXF DEB specification
+
+/gpdb_src/                 - github/open-gpdb/gpdb
+/gpdb_src/debian           - one of the `debian` folders from github/open-gpdb/gpdb-devops
+/gpdb_src/debian/build     - build destination for open-gpdb build
+
+/pxf_src/                  - this repo
+/pxf_src/devops            - git submodule github/open-gpdb/gpdb-devops
+/pxf_src/debian/build/gp   - link to /opt/greenplum-db-<version>, pxf will install pxf.so here
+
+`mk-build-deps` install build dependencies from debian/control file
+`dpkg-buildpackage -us -uc` - build debian package (`-uc -us` - without signing)
+basically it will call `make <step>` from debian/rules file
+Resulitng deb files conists of:
+* files that `make install` from debian/rules copied to `$(DESTDIR)`
+* files mentioned in debian/install
+
+
+## Debugging
+
+```
+export BUILDX_EXPERIMENTAL=1
+docker buildx debug --on=error build  -f package/pxf_6_jammy/Dockerfile .
+...
+BOOOM!
+
+(buildx) list
+(buildx) attach local
+(buildx) exec /bin/bash
+```
+
+More info: https://github.com/docker/buildx/blob/master/docs/debugging.md
+
 
 ## PXF RPM specification
 On Centos platforms PXF product is packaged as an RPM. The specification on how to build the RPM is provided by the
