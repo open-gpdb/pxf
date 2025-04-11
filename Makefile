@@ -13,6 +13,12 @@ ifndef PGXS
 endif
 include $(PGXS)
 
+# variables that control whether the external-table extension will be built and packaged,
+# if left empty there is no skipping, otherwise a value should contain a reason for skipping
+ifeq ($(shell test $(GP_MAJORVERSION) -ne 6; echo $$?),0)
+	SKIP_EXTERNAL_TABLE_BUILD_REASON := "Cloudberry $(GP_MAJORVERSION) doesn't support External Table Framework"
+	SKIP_EXTERNAL_TABLE_PACKAGE_REASON := "Cloudberry $(GP_MAJORVERSION) doesn't support External Table Framework"
+endif
 # variables that control whether the FDW extension will be built and packaged,
 # if left empty there is no skipping, otherwise a value should contain a reason for skipping
 ifeq ($(shell test $(GP_MAJORVERSION) -lt 6; echo $$?),0)
@@ -28,6 +34,8 @@ else
 	GP_BUILD_ARCH := $(subst _,-,$(BLD_ARCH))
 endif
 
+export SKIP_EXTERNAL_TABLE_BUILD_REASON
+export SKIP_EXTERNAL_TABLE_PACKAGE_REASON
 export SKIP_FDW_BUILD_REASON
 export SKIP_FDW_PACKAGE_REASON
 export GP_MAJORVERSION
@@ -48,9 +56,13 @@ all: extensions cli server
 
 extensions: external-table fdw
 
-external-table cli server:
+external-table:
+ifeq ($(SKIP_EXTERNAL_TABLE_BUILD_REASON),)
 	@echo "===> Compiling [$@] module <==="
 	make -C $@
+else
+	@echo "Skipping building external-table extension because $(SKIP_EXTERNAL_TABLE_BUILD_REASON)"
+endif
 
 fdw:
 ifeq ($(SKIP_FDW_BUILD_REASON),)
@@ -60,6 +72,9 @@ else
 	@echo "Skipping building FDW extension because $(SKIP_FDW_BUILD_REASON)"
 endif
 
+cli server:
+	@echo "===> Compiling [$@] module <==="
+	make -C $@
 clean:
 	rm -rf build
 	set -e ;\
@@ -82,6 +97,10 @@ it:
 	make -C automation TEST=$(TEST)
 
 install:
+ifneq ($(SKIP_EXTERNAL_TABLE_BUILD_REASON),)
+	@echo "Skipping installing FDW extension because $(SKIP_EXTERNAL_TABLE_BUILD_REASON)"
+	$(eval PXF_MODULES := $(filter-out external-table,$(PXF_MODULES)))
+endif
 ifneq ($(SKIP_FDW_BUILD_REASON),)
 	@echo "Skipping installing FDW extension because $(SKIP_FDW_BUILD_REASON)"
 	$(eval PXF_MODULES := $(filter-out fdw,$(PXF_MODULES)))
@@ -98,6 +117,10 @@ install-server:
 
 stage:
 	rm -rf build/stage
+ifneq ($(SKIP_EXTERNAL_TABLE_PACKAGE_REASON),)
+	@echo "Skipping staging FDW extension because $(SKIP_EXTERNAL_TABLE_PACKAGE_REASON)"
+	$(eval PXF_MODULES := $(filter-out external-table,$(PXF_MODULES)))
+endif
 ifneq ($(SKIP_FDW_PACKAGE_REASON),)
 	@echo "Skipping staging FDW extension because $(SKIP_FDW_PACKAGE_REASON)"
 	$(eval PXF_MODULES := $(filter-out fdw,$(PXF_MODULES)))

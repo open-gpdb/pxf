@@ -59,5 +59,4 @@ RUN /pxf_src/devops/scripts/build-deb.sh
 # /greenplum-db-cb_1.0.0.tar.xz
 
 RUN mkdir /build && \
-    cp /*.deb /build && \
-    cp /*.tar.* /build
+    cp /*.deb /build
