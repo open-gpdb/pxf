@@ -16,8 +16,8 @@ include $(PGXS)
 # variables that control whether the external-table extension will be built and packaged,
 # if left empty there is no skipping, otherwise a value should contain a reason for skipping
 ifeq ($(shell test $(GP_MAJORVERSION) -ne 6; echo $$?),0)
-	SKIP_EXTERNAL_TABLE_BUILD_REASON := "Cloudberry $(GP_MAJORVERSION) doesn't support External Table Framework"
-	SKIP_EXTERNAL_TABLE_PACKAGE_REASON := "Cloudberry $(GP_MAJORVERSION) doesn't support External Table Framework"
+	SKIP_EXTERNAL_TABLE_BUILD_REASON := "Cloudberry $(GP_MAJORVERSION) doesnt support External Table Framework"
+	SKIP_EXTERNAL_TABLE_PACKAGE_REASON := "Cloudberry $(GP_MAJORVERSION) doesnt support External Table Framework"
 endif
 # variables that control whether the FDW extension will be built and packaged,
 # if left empty there is no skipping, otherwise a value should contain a reason for skipping
@@ -75,6 +75,7 @@ endif
 cli server:
 	@echo "===> Compiling [$@] module <==="
 	make -C $@
+
 clean:
 	rm -rf build
 	set -e ;\
