@@ -53,6 +53,5 @@ RUN dpkg-buildpackage -us -uc
 # /greenplum-db-cb_1.0.0.tar.xz
 
 RUN mkdir /build && \
-    cp /*.deb /build && \
-    cp /*.tar.* /build
+    cp /*.deb /build
 

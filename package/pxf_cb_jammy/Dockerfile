@@ -52,5 +52,4 @@ RUN source /usr/cloudberry-db/greenplum_path.sh \
 # get your packages in
 # /greenplum-pxf-1_6.10.1_amd64.deb
 RUN mkdir /build && \
-    cp /*.deb /build && \
-    cp /*.tar.* /build
+    cp /*.deb /build

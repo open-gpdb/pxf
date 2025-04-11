@@ -50,5 +50,4 @@ RUN source /opt/greenplum-db-6/greenplum_path.sh \
 # get your packages in
 # /greenplum-pxf-6_6.10.1_amd64.deb
 RUN mkdir /build && \
-    cp /*.deb /build && \
-    cp /*.tar.* /build
+    cp /*.deb /build
