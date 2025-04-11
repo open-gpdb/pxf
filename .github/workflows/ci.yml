@@ -110,7 +110,7 @@ jobs:
           submodules: true
 
       - name: (restore) database deb files caching
-        id: cache-debs
+        id: cache-debs-db
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
@@ -119,7 +119,7 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.target.db-cache-key-sfx }}-${{ steps.get-date.outputs.week }}
 
       - name: (restore) PXF deb files caching
-        id: cache-debs
+        id: cache-debs-pxf
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
