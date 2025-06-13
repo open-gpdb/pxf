@@ -27,7 +27,7 @@ COPY . /pxf_src/
 RUN mk-build-deps --build-dep \
     --install \
     --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' \
-    /pxf_src/devops/packaging/deb/gpdb_bionic/debian/control
+    /pxf_src/devops/packaging/open-gpdb/deb/18.04/control
 
 # install missing parts
 RUN tar -xzf /pxf_src/downloads/xerces-c-3.1.1.tar.gz && \
@@ -36,7 +36,8 @@ RUN tar -xzf /pxf_src/downloads/xerces-c-3.1.1.tar.gz && \
     make -j$(nproc) > /dev/null && \
     make -j$(nproc) install
 
-RUN cp -r /pxf_src/devops/packaging/deb/gpdb_bionic/debian /gpdb_src/
+RUN mkdir -p /gpdb_src/debian && \
+    cp -r /pxf_src/devops/packaging/open-gpdb/deb/18.04/* /gpdb_src/debian
 
 RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && \
     chmod +x /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh && \

@@ -12,7 +12,7 @@ RUN apt-get update &&\
         python3 devscripts debhelper pbuilder reprepro equivs quilt
 
 # Install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
+RUN wget -O - "https://go.dev/dl/go1.22.12.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 COPY . /pxf_src/
 RUN apt -o Apt::Get::Assume-Yes=true install /pxf_src/downloads/greenplum-db-6_6.0.0-bionic-dev_amd64.deb
@@ -26,7 +26,8 @@ RUN locale-gen en_US.utf8
 
 # copy source & create layout for packaging
 ENV PXF_PKG_VERSION "6.10.1-bionic-dev"
-RUN cp -r /pxf_src/devops/packaging/deb/pxf_6_bionic/debian /pxf_src/debian \
+RUN mkdir -p /pxf_src/debian \
+ && cp -r /pxf_src/devops/packaging/pxf/deb/18.04/* /pxf_src/debian \
  && source /pxf_src/package/package-deb.bash \
  && print_changelog > /pxf_src/debian/changelog
 
