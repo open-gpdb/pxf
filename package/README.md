@@ -32,7 +32,7 @@ We use docker as clean build environment. Build is consists of two stages:
 `mk-build-deps` install build dependencies from debian/control file
 `dpkg-buildpackage -us -uc` - build debian package (`-uc -us` - without signing)
 basically it will call `make <step>` from debian/rules file
-Resulitng deb files conists of:
+Resulting deb files consists of:
 * files that `make install` from debian/rules copied to `$(DESTDIR)`
 * files mentioned in debian/install
 

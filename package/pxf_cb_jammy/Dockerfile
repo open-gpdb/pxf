@@ -11,7 +11,7 @@ RUN apt-get update && \
         python3 devscripts debhelper pbuilder reprepro equivs quilt
 
 # install golang
-RUN wget -O - "https://go.dev/dl/go1.22.9.linux-amd64.tar.gz" | tar -C /usr/local -xz
+RUN wget -O - "https://go.dev/dl/go1.22.12.linux-amd64.tar.gz" | tar -C /usr/local -xz
 
 # install greenplum:
 COPY . /pxf_src/
@@ -27,7 +27,8 @@ RUN locale-gen en_US.utf8
 # copy source & create layout for packaging
 ENV PXF_PKG_VERSION "1.0.0-jammy-dev"
 COPY . /packaging/
-RUN cp -r /pxf_src/devops/packaging/deb/pxf_cb_jammy/debian /pxf_src/debian \
+RUN mkdir -p /pxf_src/debian \
+ && cp -r /pxf_src/devops/packaging/pxf/deb/22.04-cbdb/* /pxf_src/debian \
  && source /pxf_src/package/package-deb.bash \
  && print_cb_changelog > /pxf_src/debian/changelog
 
