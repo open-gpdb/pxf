@@ -122,4 +122,23 @@ jobs:
 
       - name: Use PXF builds
         run: ls -lah ./downloads/
+
+      - name: Build automation images
+        run: |
+          echo "Building automation images..."
+          cd automation
+          make copy-debs
+          docker compose build
+          docker compose up
+
+      - name: Save automation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-test-results-${{ matrix.target.pxf }}
+          path: |
+            /automation/automation_logs
+            /automation/target/surefire-reports
+          retention-days: 30
+
         # TODO: add /regression and /automation tests here
