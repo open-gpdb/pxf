@@ -1,0 +1,19 @@
+services:
+  # automation + all services are in the same docker compose file
+  universe:
+    build:
+      context: ./docker/universe
+      dockerfile: Dockerfile
+    container_name: universe
+    hostname: mdw
+    volumes:
+      - ..:/home/gpadmin/workspace/pxf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5888/actuator/health", "-H 'Accept: application/json'"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+networks:
+  default:
+    name: automation
