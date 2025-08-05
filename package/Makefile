@@ -1,4 +1,4 @@
-.PHONY: help download-xerces-c-3-3-0 download-xerces-c-3-1-1 deb-gpdb-bionic deb-gpdb-jammy deb-cbdb-jammy deb-pxf6-gpdb-bionic deb-pxf6-gpdb-jammy deb-pxf6-cbdb-jammy
+.PHONY: help download-xerces-c-3-3-0 deb-gpdb-bionic deb-gpdb-jammy deb-cbdb-jammy deb-pxf6-gpdb-bionic deb-pxf6-gpdb-jammy deb-pxf6-cbdb-jammy
 
 help:
 	@echo
@@ -10,12 +10,8 @@ help:
 download-xerces-c-3-3-0:
 	wget --continue https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.3.0.tar.gz -P ../downloads/
 
-# FIXME: does it works with 3.3.0 for all builds?
-download-xerces-c-3-1-1:
-	wget --continue https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.1.tar.gz -P ../downloads/
-
 deb-gpdb-bionic: DOCKER_TAG = deb-gpdb-bionic
-deb-gpdb-bionic: download-xerces-c-3-1-1
+deb-gpdb-bionic:
 	echo "===> Building open-gpdb for bionic <==="
 ifeq ($(shell test -f ../downloads/greenplum-db-6_6.0.0-bionic-dev_amd64.deb ; echo $$?),0)
 	@echo "Skipping build: we already have gpdb bionic build in downloads."
@@ -27,7 +23,7 @@ else
 endif
 
 deb-gpdb-jammy: DOCKER_TAG = deb-gpdb-jammy
-deb-gpdb-jammy: download-xerces-c-3-1-1
+deb-gpdb-jammy:
 	echo "===> Building open-gpdb for jammy <==="
 ifeq ($(shell test -f ../downloads/greenplum-db-6_6.0.0-jammy-dev_amd64.deb ; echo $$?),0)
 	@echo "Skipping build: we already have gpdb jammy build in downloads."

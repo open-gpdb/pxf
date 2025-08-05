@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Filesystem layout:
 #   /pxf_src/downloads         - this repo's cache directory
@@ -30,34 +30,37 @@ RUN mk-build-deps --build-dep \
     /pxf_src/devops/packaging/open-gpdb/deb/18.04/control
 
 # install missing parts
-RUN tar -xzf /pxf_src/downloads/xerces-c-3.1.1.tar.gz && \
-    cd xerces-c-3.1.1 && \
-    ./configure && \
+RUN cd /tmp/ && \
+    git clone https://github.com/greenplum-db/gp-xerces-archive.git && \
+    cd /tmp/gp-xerces-archive/ && \
+    ./configure --prefix=/usr/local && \
     make -j$(nproc) > /dev/null && \
     make -j$(nproc) install
+
+RUN cd /tmp/ && \
+    git clone https://github.com/boundary/sigar.git -b master && \
+    cd /tmp/sigar/ && \
+    cmake . && make && \
+    make install
 
 RUN mkdir -p /gpdb_src/debian && \
     cp -r /pxf_src/devops/packaging/open-gpdb/deb/18.04/* /gpdb_src/debian
 
 RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && \
     chmod +x /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh && \
+    chmod +x /pxf_src/devops/build_automation/gpdb/scripts/vendor.sh && \
     chmod +x /pxf_src/devops/scripts/build-deb.sh
 
 ENV SRC_DIR="/gpdb_src"
 ENV BUILD_DESTINATION="/gpdb_src/debian/build"
-ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca --disable-yezzey"
+ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --enable-orca --disable-yezzey"
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh
-# we should run `/pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh`
-# but it tries to build contribs as well... but we don't need it (and it fails to compile)
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-RUN make -j$(nproc) \
-     && make -j$(nproc) install
+RUN /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh
+RUN /pxf_src/devops/build_automation/gpdb/scripts/vendor.sh
 ENV GPDB_PKG_VERSION="6.0.0-bionic-dev"
-RUN /pxf_src/devops/scripts/build-deb.sh
+RUN /pxf_src/devops/scripts/build-deb.sh && \
+  cp /usr/local/lib/libxerces* ${BUILD_DESTINATION}/lib
 
 # get your packages in
 # /greenplum-db-cb_1.0.0-dev_amd64.deb
