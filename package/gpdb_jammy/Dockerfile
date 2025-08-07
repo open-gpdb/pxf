@@ -32,25 +32,34 @@ RUN mk-build-deps --build-dep \
     /pxf_src/devops/packaging/open-gpdb/deb/22.04/control
 
 # install missing parts
-RUN tar -xzf /pxf_src/downloads/xerces-c-3.1.1.tar.gz && \
-    cd xerces-c-3.1.1 && \
-    ./configure && \
+RUN cd /tmp/ && \
+    git clone https://github.com/greenplum-db/gp-xerces-archive.git && \
+    cd /tmp/gp-xerces-archive/ && \
+    ./configure --prefix=/usr/local && \
     make -j$(nproc) > /dev/null && \
     make -j$(nproc) install
+
+RUN cd /tmp/ && \
+    git clone https://github.com/boundary/sigar.git -b master && \
+    cd /tmp/sigar/ && \
+    cmake . && make && \
+    make install
 
 RUN mkdir -p /gpdb_src/debian && \
     cp -r /pxf_src/devops/packaging/open-gpdb/deb/22.04/* /gpdb_src/debian
 
 RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && \
     chmod +x /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh && \
+    chmod +x /pxf_src/devops/build_automation/gpdb/scripts/vendor.sh && \
     chmod +x /pxf_src/devops/scripts/build-deb.sh
 
 ENV SRC_DIR="/gpdb_src"
 ENV BUILD_DESTINATION="/gpdb_src/debian/build"
-ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --disable-orca --disable-yezzey"
+ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --enable-orca --disable-yezzey"
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh
 RUN /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh
+RUN /pxf_src/devops/build_automation/gpdb/scripts/vendor.sh
 ENV GPDB_PKG_VERSION="6.0.0-jammy-dev"
 RUN /pxf_src/devops/scripts/build-deb.sh
 
