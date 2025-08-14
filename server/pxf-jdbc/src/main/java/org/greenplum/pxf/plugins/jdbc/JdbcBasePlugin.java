@@ -336,7 +336,7 @@ public class JdbcBasePlugin extends BasePlugin {
 
         // This must be the last parameter parsed, as we output connectionConfiguration earlier
         // Optional parameter. By default, corresponding connectionConfiguration property is not set
-        boolean passwordSetted = false
+        boolean passwordSetted = false;
         if (jdbcUser != null) {
             String jdbcPassword = configuration.get(JDBC_PASSWORD_PROPERTY_NAME);
             if (jdbcPassword != null) {
@@ -608,4 +608,5 @@ public class JdbcBasePlugin extends BasePlugin {
     }
 
 }
+
 
