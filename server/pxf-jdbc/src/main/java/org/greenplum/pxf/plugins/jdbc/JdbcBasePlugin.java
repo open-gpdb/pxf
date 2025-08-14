@@ -342,7 +342,7 @@ public class JdbcBasePlugin extends BasePlugin {
             if (jdbcPassword != null) {
                 LOG.debug("Connection password: {}", ConnectionManager.maskPassword(jdbcPassword));
                 connectionConfiguration.setProperty("password", jdbcPassword);
-                passwordSetted = true
+                passwordSetted = true;
             }
         }
         if (!passwordSetted) {
@@ -608,5 +608,6 @@ public class JdbcBasePlugin extends BasePlugin {
     }
 
 }
+
 
 
