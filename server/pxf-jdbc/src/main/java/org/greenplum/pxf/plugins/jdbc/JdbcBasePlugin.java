@@ -320,6 +320,10 @@ public class JdbcBasePlugin extends BasePlugin {
             connectionConfiguration.setProperty("user", jdbcUser);
         } else {
             LOG.debug("JDBC user has not been set");
+            // Because of https://github.com/pgjdbc/pgjdbc/blob/34a3416308126b2592ada84c7e781a655758a5cf/pgjdbc/src/main/java/org/postgresql/Driver.java#L535
+            // we need to hide ways to get user/password with priority >2 so we hide them setting this property.
+            // It has priority 2, so we not hide "pass in url" way.
+            connectionConfiguration.setProperty("user", "some_user");
         }
 
         if (LOG.isDebugEnabled()) {
@@ -332,12 +336,20 @@ public class JdbcBasePlugin extends BasePlugin {
 
         // This must be the last parameter parsed, as we output connectionConfiguration earlier
         // Optional parameter. By default, corresponding connectionConfiguration property is not set
+        boolean passwordSetted = false
         if (jdbcUser != null) {
             String jdbcPassword = configuration.get(JDBC_PASSWORD_PROPERTY_NAME);
             if (jdbcPassword != null) {
                 LOG.debug("Connection password: {}", ConnectionManager.maskPassword(jdbcPassword));
                 connectionConfiguration.setProperty("password", jdbcPassword);
+                passwordSetted = true
             }
+        }
+        if (!passwordSetted) {
+            // Because of https://github.com/pgjdbc/pgjdbc/blob/34a3416308126b2592ada84c7e781a655758a5cf/pgjdbc/src/main/java/org/postgresql/Driver.java#L535
+            // we need to hide ways to get user/password with priority >2 so we hide them setting this property.
+            // It has priority 2, so we not hide "pass in url" way.
+            connectionConfiguration.setProperty("password", "some_password");
         }
 
         // connection pool is optional, enabled by default
@@ -596,3 +608,4 @@ public class JdbcBasePlugin extends BasePlugin {
     }
 
 }
+
