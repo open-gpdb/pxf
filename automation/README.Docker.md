@@ -21,8 +21,7 @@ File layout:
 /home/gpadmin
 /home/gpadmin/pxf       - is PXF_BASE
 /home/gpadmin/pxf/conf
+/home/gpadmin/workspace/singlecluster - is GPHD_ROOT
 
 /opt/greenplum-pxf-6/   - is PXF_HOME
-
-/home/gpadmin/workspace/singlecluster - ???
 ```
