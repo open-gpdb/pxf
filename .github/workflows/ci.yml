@@ -132,14 +132,36 @@ jobs:
           docker compose build
           docker compose up
 
+      - name: Extract test artifacts from container
+        if: always()
+        run: |
+          echo "Extracting test artifacts from container..."
+          
+          # Create test artifacts directory structure
+          mkdir -p ./automation/test_artifacts/surefire-reports
+          mkdir -p ./automation/test_artifacts/automation_logs
+          mkdir -p ./automation/test_artifacts/pxf_regress
+          
+          # Extract main test reports with preserved structure
+          docker compose -f automation/docker-compose.yml cp universe:/home/gpadmin/workspace/pxf/automation/target/surefire-reports ./automation/test_artifacts || echo "No surefire-reports found"
+          docker compose -f automation/docker-compose.yml cp universe:/home/gpadmin/workspace/pxf/automation/automation_logs ./automation/test_artifacts || echo "No automation_logs found"
+          
+          # Extract additional test results for debugging with preserved structure
+          docker compose -f automation/docker-compose.yml cp universe:/home/gpadmin/workspace/pxf/automation/pxf_regress ./automation/test_artifacts || echo "No pxf_regress found"
+          
+          echo "Extracted artifacts:"
+          ls -la ./automation/test_artifacts/ || echo "No test_artifacts directory"
+
       - name: Save automation artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: automation-test-results-${{ matrix.target.pxf }}
           path: |
-            /home/gpadmin/workspace/pxf/automation/target/surefire-reports
-            /home/gpadmin/workspace/pxf/automation/automation_logs
+            ./automation/test_artifacts/surefire-reports
+            ./automation/test_artifacts/automation_logs
+            ./automation/test_artifacts/pxf_regress
+            ./automation/test_artifacts/sqlrepo
           retention-days: 30
 
       - name: Process TestNG reports
@@ -151,7 +173,7 @@ jobs:
             const path = require('path');
             
             const targetPlatform = '${{ matrix.target.pxf }}';
-            const testReportsDir = '/home/gpadmin/workspace/pxf/automation/target/surefire-reports';
+            const testReportsDir = './automation/test_artifacts/surefire-reports';
             
             console.log(`Processing test reports for ${targetPlatform}...`);
             

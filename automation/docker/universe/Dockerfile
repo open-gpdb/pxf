@@ -20,19 +20,19 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Copy Greenplum:
-COPY debs/greenplum-db-6_6.0.0-bionic-dev_amd64.deb /tmp/
+COPY docker/universe/debs/greenplum-db-6_6.0.0-bionic-dev_amd64.deb /tmp/
 RUN apt-get install -y /tmp/greenplum-db-6_6.0.0-bionic-dev_amd64.deb && \
     rm /tmp/greenplum-db-6_6.0.0-bionic-dev_amd64.deb
 
-COPY gpinitsystem_singlenode /tmp/
+COPY docker/universe/gpinitsystem_singlenode /tmp/
 
 # Install PXF
-COPY debs/greenplum-pxf-6_6.10.1-bionic-dev_amd64.deb /tmp/
+COPY docker/universe/debs/greenplum-pxf-6_6.10.1-bionic-dev_amd64.deb /tmp/
 RUN apt-get install -y /tmp/greenplum-pxf-6_6.10.1-bionic-dev_amd64.deb && \
     rm /tmp/greenplum-pxf-6_6.10.1-bionic-dev_amd64.deb
 
 # --------------------------------------------------------------------
-# Install automation
+# Install automation dependencies
 # --------------------------------------------------------------------
 
 # automation has tests with CP1251 encoding
@@ -102,6 +102,12 @@ ENV PXF_BASE=/home/gpadmin/pxf
 
 EXPOSE 5432 22
 
-COPY entrypoint.sh /entrypoint.sh
+# Copy automation directory into container
+RUN mkdir -p /home/gpadmin/workspace/pxf && chown gpadmin:gpadmin /home/gpadmin/workspace/pxf
+COPY . /home/gpadmin/workspace/pxf/automation
+RUN sudo chown -R gpadmin:gpadmin /home/gpadmin/workspace/pxf/automation
+RUN sudo chmod -R 755 /home/gpadmin/workspace/pxf/automation
+
+COPY docker/universe/entrypoint.sh /entrypoint.sh
 RUN sudo chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
