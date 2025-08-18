@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 # ----------------------------------------------------------------------
 # Start SSH daemon and setup for SSH access
@@ -111,8 +112,13 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 # --------------------------------------------------------------------
 # Run tests
 # --------------------------------------------------------------------
-cd /home/gpadmin/workspace/pxf/automation
+# create GOCACHE directory for gpadmin user
+sudo mkdir -p /home/gpadmin/.cache/go-build
+sudo chown -R gpadmin:gpadmin /home/gpadmin/.cache
+sudo chmod -R 755 /home/gpadmin/.cache
+
 # make without arguments runs all tests
+cd /home/gpadmin/workspace/pxf/automation
 make
 
 # Keep container running

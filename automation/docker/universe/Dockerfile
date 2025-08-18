@@ -103,7 +103,7 @@ ENV PXF_BASE=/home/gpadmin/pxf
 EXPOSE 5432 22
 
 # Copy automation directory into container
-RUN mkdir -p /home/gpadmin/workspace/pxf && chown gpadmin:gpadmin /home/gpadmin/workspace/pxf
+RUN mkdir -p /home/gpadmin/workspace/pxf
 COPY . /home/gpadmin/workspace/pxf/automation
 RUN sudo chown -R gpadmin:gpadmin /home/gpadmin/workspace/pxf/automation
 RUN sudo chmod -R 755 /home/gpadmin/workspace/pxf/automation
