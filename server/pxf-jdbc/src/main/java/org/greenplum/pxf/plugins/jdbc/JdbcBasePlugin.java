@@ -33,6 +33,9 @@ import org.greenplum.pxf.plugins.jdbc.utils.HiveJdbcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -300,6 +303,25 @@ public class JdbcBasePlugin extends BasePlugin {
         String transactionIsolationString = configuration.get(JDBC_CONNECTION_TRANSACTION_ISOLATION, "NOT_PROVIDED");
         transactionIsolation = TransactionIsolation.typeOf(transactionIsolationString);
 
+        boolean hasUserInUrl = false;
+        boolean hasPasswordInUrl = false;
+        try {
+            URI uri = new URI(jdbcUrl);
+            String query = uri.getQuery();
+            if (query != null && !query.isEmpty()) {
+                hasUserInUrl = query.contains("user=");
+                hasPasswordInUrl = query.contains("password=");
+            }
+            String rawUserInfo = uri.getRawUserInfo();
+            if (rawUserInfo != null && !rawUserInfo.isEmpty()) {
+                hasUserInUrl = true;
+                hasPasswordInUrl = rawUserInfo.contains("/"); // https://www.orafaq.com/wiki/JDBC
+            }
+        } catch (URISyntaxException e) {
+            // If the URL is malformed, it's also an invalid argument
+            throw new IllegalArgumentException("Invalid JDBC URL format provided: " + jdbcUrl, e);
+        }
+
         // Set optional user parameter, taking into account impersonation setting for the server.
         String jdbcUser = configuration.get(JDBC_USER_PROPERTY_NAME);
         boolean impersonationEnabledForServer = configuration.getBoolean(CONFIG_KEY_SERVICE_USER_IMPERSONATION, false);
@@ -315,15 +337,12 @@ public class JdbcBasePlugin extends BasePlugin {
                 jdbcUser = context.getUser();
             }
         }
-        if (jdbcUser != null) {
+        if (jdbcUser != null && !jdbcUser.isEmpty()) {
             LOG.debug("Effective JDBC user {}", jdbcUser);
             connectionConfiguration.setProperty("user", jdbcUser);
-        } else {
+        } else if (!hasUserInUrl) {
             LOG.debug("JDBC user has not been set");
-            // Because of https://github.com/pgjdbc/pgjdbc/blob/34a3416308126b2592ada84c7e781a655758a5cf/pgjdbc/src/main/java/org/postgresql/Driver.java#L535
-            // we need to hide ways to get user/password with priority >2 so we hide them setting this property.
-            // It has priority 2, so we not hide "pass in url" way.
-            connectionConfiguration.setProperty("user", "some_user");
+            throw new IllegalArgumentException("JDBC user has not been set");
         }
 
         if (LOG.isDebugEnabled()) {
@@ -339,17 +358,14 @@ public class JdbcBasePlugin extends BasePlugin {
         boolean passwordSetted = false;
         if (jdbcUser != null) {
             String jdbcPassword = configuration.get(JDBC_PASSWORD_PROPERTY_NAME);
-            if (jdbcPassword != null) {
+            if (jdbcPassword != null && !jdbcPassword.isEmpty()) {
                 LOG.debug("Connection password: {}", ConnectionManager.maskPassword(jdbcPassword));
                 connectionConfiguration.setProperty("password", jdbcPassword);
                 passwordSetted = true;
             }
         }
-        if (!passwordSetted) {
-            // Because of https://github.com/pgjdbc/pgjdbc/blob/34a3416308126b2592ada84c7e781a655758a5cf/pgjdbc/src/main/java/org/postgresql/Driver.java#L535
-            // we need to hide ways to get user/password with priority >2 so we hide them setting this property.
-            // It has priority 2, so we not hide "pass in url" way.
-            connectionConfiguration.setProperty("password", "some_password");
+        if (!passwordSetted && !hasPasswordInUrl) {
+            throw new IllegalArgumentException("JDBC password has not been set");
         }
 
         // connection pool is optional, enabled by default
