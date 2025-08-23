@@ -19,7 +19,7 @@ RUN apt-get update && \
 
 # checkout cloudberry to /gpdb_src
 WORKDIR /
-RUN git clone https://github.com/apache/cloudberry.git gpdb_src --single-branch --branch main --depth 1
+RUN git clone https://github.com/apache/cloudberry.git gpdb_src --single-branch --branch REL_2_STABLE --depth 1
 
 # checkout this repository to /pxf_src
 COPY . /pxf_src
