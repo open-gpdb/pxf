@@ -43,7 +43,7 @@ RUN mk-build-deps  --build-dep --install --tool='apt-get -o Debug::pkgProblemRes
 
 
 # dpkg-buildpackage will call make && make install (via debian/rules)
-RUN ( source /usr/local/gpdb_src/greenplum_path.sh || source /usr/local/gpdb_src/cloudberry-env.sh ) \
+RUN ( source /usr/cloudberry-db/greenplum_path.sh || source /usr/cloudberry-db/cloudberry-env.sh ) \
  && PATH="/usr/local/go/bin:$PATH" \
     GPHOME="/usr/cloudberry-db" \
     PXF_HOME="/pxf_src/debian/build/gp/pxf" \
