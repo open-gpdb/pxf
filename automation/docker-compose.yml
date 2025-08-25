@@ -1,0 +1,23 @@
+services:
+  # automation + all services are in the same docker compose file
+  universe:
+    build:
+      context: .
+      dockerfile: docker/universe/Dockerfile
+    container_name: universe
+    hostname: mdw
+    #ports:
+    #  - "5432:5432"  # Greenplum Database
+    #  - "5888:5888"  # PXF Service
+    #  - "22:22"      # SSH
+    #volumes:
+    #  - ..:/home/gpadmin/workspace/pxf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5888/actuator/health", "-H 'Accept: application/json'", "--max-time", "5"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+networks:
+  default:
+    name: automation
