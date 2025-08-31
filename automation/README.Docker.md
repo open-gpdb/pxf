@@ -19,6 +19,8 @@ mkdir -p  ./test_artifacts
 docker compose cp universe:/home/gpadmin/workspace/pxf/automation/target/surefire-reports ./test_artifacts || echo "No surefire-reports found"
 ```
 
+Hadoop logs in `/home/gpadmin/workspace/singlecluster/storage/logs/`
+
 ## How it works
 
 The `docker-compose.yml` file defines the services needed to run the Automation tests. It includes:

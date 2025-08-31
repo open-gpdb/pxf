@@ -100,10 +100,6 @@ ENV PATH=$PATH:$GPHD_ROOT/bin:$HADOOP_ROOT/bin:$HBASE_ROOT/bin:$HIVE_ROOT/bin:$Z
 COPY --from=pxf/singlecluster:3 $GPHD_ROOT $GPHD_ROOT
 RUN sudo chown -R gpadmin:gpadmin $GPHD_ROOT
 
-COPY docker/universe/configure_singlecluster.bash /tmp/
-RUN sudo chmod a+x /tmp/configure_singlecluster.bash && \
-    /tmp/configure_singlecluster.bash
-
 # --------------------------------------------------------------------
 # Run tests
 # --------------------------------------------------------------------

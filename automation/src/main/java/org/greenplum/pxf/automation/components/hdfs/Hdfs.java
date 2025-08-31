@@ -68,7 +68,7 @@ public class Hdfs extends BaseSystemObject implements IFSFunctionality {
     private FileSystem fs;
     private Configuration config;
     // NN host
-    private String host;
+    private String host = "localhost";
     private String hostStandby;
     private String port = "8020";
     private String hadoopRoot;
