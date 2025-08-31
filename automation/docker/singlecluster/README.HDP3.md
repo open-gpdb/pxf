@@ -4,9 +4,9 @@ Singlecluster-HDP3
 Singlecluster-HDP3 is a self-contained, easy to deploy distribution of HDP3 (3.1.4.0-315)
 It contains the following versions:
 
-- Hadoop 3.1.1
+- Hadoop 3.3.6
 - Hive 3.1.0
-- Zookeeper 3.4.6
+- Zookeeper 3.5.9
 - HBase 2.0.2
 - Tez 0.9.1
 
@@ -22,83 +22,19 @@ Initialization
 
 1. Make sure **all** running instances of other singlecluster processes are stopped.
 
-2. Pull down the singlecluster-HDP3 tarball from GCP and untar:
+2. Pull down the singlecluster-HDP3 components:
 
     ```sh
-    mv singlecluster-HDP3.tar.gz ~/workspace
-    cd ~/workspace
-    mkdir singlecluster-HDP3
-    tar -xf singlecluster-HDP3.tar.gz --strip-components=1 --directory=singlecluster-HDP3
-    cd singlecluster-HDP3
-    export GPHD_ROOT="${PWD}"
+   docker compose build singlecluster
     ```
 
-3. Adjust the configuration for Hadoop 3 (the following steps are based on the function `adjust_for_hadoop3` in `pxf_common.bash`)
-
-      1. In `${GPHD_ROOT}/hive/conf/hive-env.sh`, remove `-hiveconf hive.log.dir=$LOGS_ROOT` from the `HIVE_OPTS` and `HIVE_SERVER_OPTS` exports: 
-
-          ```sh
-           sed -i -e 's/-hiveconf hive.log.dir=$LOGS_ROOT//' singlecluster-HDP3/hive/conf/hive-env.sh
-          ```
-
-      2. Update the `hive.execution.engine` property to `tez` in `${GPHD_ROOT}/hive/conf/hive-site.xml`:
-
-          ```sh
-           sed -e '/hive.execution.engine/{n;s/>.*</>tez</}' singlecluster-HDP3/hive/conf/hive-site.xml
-           ```
-      
-      3. Add the following properties to `${GPHD_ROOT}/hive/conf/hive-site.xml`: 
-
-          ```xml
-           <property>
-              <name>hive.tez.container.size</name>
-              <value>2048</value>
-           </property>
-           <property>
-              <name>datanucleus.schema.autoCreateAll</name>
-              <value>True</value>
-           </property>
-           <property>
-              <name>metastore.metastore.event.db.notification.api.auth</name>
-              <value>false</value>
-           </property>
-          ```
-      
-      4. Add the following property to `"${GPHD_ROOT}/tez/conf/tez-site.xml`:
-
-          ```xml
-           <property>
-             <name>tez.use.cluster.hadoop-libs</name>
-             <value>true</value>
-           </property>
-          ```
-      
-      5. Replace `HADOOP_CONF` with `HADOOP_CONF_DIR` and `HADOOP_ROOT` with `HADOOP_HOME` in `${GPHD_ROOT}/hadoop/etc/hadoop/yarn-site.xml`:
-
-          ```sh
-          sed -i.bak -e 's|HADOOP_CONF|HADOOP_CONF_DIR|g' \
-               -e 's|HADOOP_ROOT|HADOOP_HOME|g' "${GPHD_ROOT}/hadoop/etc/hadoop/yarn-site.xml"
-          ```
-
-      6. Replace `HADOOP_NAMENODE_OPTS` with `HDFS_NAMENODE_OPTS` in `${GPHD_ROOT}/hadoop/etc/hadoop/hadoop-env.sh`:
-
-          ```sh
-          sed -i.bak -e 's/HADOOP_NAMENODE_OPTS/HDFS_NAMENODE_OPTS/g' "${GPHD_ROOT}/hadoop/etc/hadoop/hadoop-env.sh"
-          ```
-
-      7. Replace `HADOOP_DATANODE_OPTS` with `HDFS_DATANODE_OPTS` in `${GPHD_ROOT}/bin/hadoop-datanode.sh`:
-
-          ```sh
-          sed -i.bak -e 's/HADOOP_DATANODE_OPTS/HDFS_DATANODE_OPTS/g' "${GPHD_ROOT}/bin/hadoop-datanode.sh"
-          ```
-
-4. Initialize an instance
+3. Initialize an instance
 
     ```sh
     ${GPHD_ROOT}/bin/init-gphd.sh
     ```
 
-5. Add the following to your environment
+4. Add the following to your environment
 
     ```sh
     export HADOOP_ROOT=$GPHD_ROOT/hadoop
@@ -185,4 +121,4 @@ If it is not running, spin up YARN before starting a new Hive session.
 
 You can view the status of your hive server as well as your YARN resources by going to the following:
 - `localhost:10002` will show the status of the HiveServer2. This includes running and completed queries, and active sessions.
-- `localhost:8088` willl show the status of the YARN resource manager. This includes cluster metrics and cluster node statuses.
+- `localhost:8088` will show the status of the YARN resource manager. This includes cluster metrics and cluster node statuses.

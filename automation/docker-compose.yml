@@ -1,4 +1,12 @@
 services:
+  # hadoop
+  singlecluster:
+    build:
+      dockerfile: ./docker/singlecluster/Dockerfile
+      context: .
+    image: pxf/singlecluster:3
+    container_name: pxf_singlecluster
+
   # automation + all services are in the same docker compose file
   universe:
     build:

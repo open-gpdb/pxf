@@ -11,7 +11,7 @@ export HADOOP_OPTS="$HADOOP_OPTS $COMMON_JAVA_OPTS"
 export COMMON_MASTER_OPTS="-Dhadoop.tmp.dir=$HADOOP_STORAGE_ROOT"
 
 # Command specific options appended to HADOOP_OPTS when specified
-export HADOOP_NAMENODE_OPTS="$COMMON_MASTER_OPTS"
+export HDFS_NAMENODE_OPTS="$COMMON_MASTER_OPTS"
 export HADOOP_SECONDARYNAMENODE_OPTS="$COMMON_MASTER_OPTS"
 
 # Where log files are stored.  $HADOOP_HOME/logs by default.

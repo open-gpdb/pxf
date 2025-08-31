@@ -1,3 +1,7 @@
+FROM pxf/singlecluster:3
+
+# copy hadoop files from this image later...
+
 FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -92,6 +96,13 @@ ENV HBASE_ROOT=$GPHD_ROOT/hbase
 ENV HIVE_ROOT=$GPHD_ROOT/hive
 ENV ZOOKEEPER_ROOT=$GPHD_ROOT/zookeeper
 ENV PATH=$PATH:$GPHD_ROOT/bin:$HADOOP_ROOT/bin:$HBASE_ROOT/bin:$HIVE_ROOT/bin:$ZOOKEEPER_ROOT/bin
+
+COPY --from=pxf/singlecluster:3 $GPHD_ROOT $GPHD_ROOT
+RUN sudo chown -R gpadmin:gpadmin $GPHD_ROOT
+
+COPY docker/universe/configure_singlecluster.bash /tmp/
+RUN sudo chmod a+x /tmp/configure_singlecluster.bash && \
+    /tmp/configure_singlecluster.bash
 
 # --------------------------------------------------------------------
 # Run tests

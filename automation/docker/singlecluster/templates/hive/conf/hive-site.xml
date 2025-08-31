@@ -19,7 +19,7 @@
 	</property>
 	<property>
 		<name>hive.execution.engine</name>
-		<value>mr</value>
+		<value>tez</value>
 		<description>Chooses execution engine. Options are: mr(default), tez, or spark</description>
 	</property>
 	<property>
@@ -35,4 +35,16 @@
 		<name>hive.metastore.integral.jdo.pushdown</name>
 		<value>true</value>
 	</property>
+    <property>
+        <name>hive.tez.container.size</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>datanucleus.schema.autoCreateAll</name>
+        <value>True</value>
+    </property>
+    <property>
+        <name>metastore.metastore.event.db.notification.api.auth</name>
+        <value>false</value>
+    </property>
 </configuration>

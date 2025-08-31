@@ -109,6 +109,12 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 # Start PXF
 /opt/greenplum-pxf-6/bin/pxf cluster start
 
+# ----------------------------------------------------------------------
+# Prepare Hadoop
+# ----------------------------------------------------------------------
+$GPHD_ROOT/bin/init-gphd.sh
+$GPHD_ROOT/bin/start-gphd.sh
+
 # --------------------------------------------------------------------
 # Run tests
 # --------------------------------------------------------------------

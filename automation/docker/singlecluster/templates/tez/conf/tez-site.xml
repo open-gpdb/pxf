@@ -18,5 +18,9 @@
 		<description>The location of the Tez libraries which will be localized
 			for DAGs</description>
 	</property>
+    <property>
+        <name>tez.use.cluster.hadoop-libs</name>
+        <value>true</value>
+    </property>
 
 </configuration>
