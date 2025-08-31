@@ -1,14 +1,14 @@
 Singlecluster-HDP3
 ==================
 
-Singlecluster-HDP3 is a self-contained, easy to deploy distribution of HDP3 (3.1.4.0-315)
+Singlecluster-HDP3 is a self-contained, easy to deploy distribution of HDP3
 It contains the following versions:
 
 - Hadoop 3.3.6
-- Hive 3.1.0
+- Hive 3.1.3
 - Zookeeper 3.5.9
-- HBase 2.0.2
-- Tez 0.9.1
+- HBase 2.0.6
+- Tez 0.9.2
 
 This version of Single cluster requires users to make some manual changes to the configuration files once the tarball has been unpacked (see Initialization steps below).
 

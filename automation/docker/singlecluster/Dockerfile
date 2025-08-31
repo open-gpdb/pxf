@@ -8,10 +8,10 @@ RUN apt-get update &&  \
 
 # TODO: update hive to support java 11+
 ENV    HADOOP_VERSION=3.3.6
-ENV      HIVE_VERSION=3.1.0
+ENV      HIVE_VERSION=3.1.3
 ENV ZOOKEEPER_VERSION=3.5.9
-ENV     HBASE_VERSION=2.0.2
-ENV       TEZ_VERSION=0.9.1
+ENV     HBASE_VERSION=2.0.6
+ENV       TEZ_VERSION=0.9.2
 
 ENV APACHE_MIRROR="archive.apache.org"
 ENV    HADOOP_URL="https://$APACHE_MIRROR/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz"

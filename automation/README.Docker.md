@@ -5,11 +5,12 @@
 ```bash
 cd automation
 make copy-debs
-docker compose build
+docker compose build singlecluster
+docker compose build universe
 docker compose up
 ```
 
-Investigate any isses:
+Investigate any issues:
 `docker compose ps` + `docker exec -it <id> bash`
 
 Extract logs:
