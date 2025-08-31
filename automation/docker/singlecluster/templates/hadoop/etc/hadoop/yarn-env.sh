@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # load singlecluster environment
-. $bin/../../bin/gphd-env.sh
+. $GPHD_ROOT/bin/gphd-env.sh
 
 export YARN_LOG_DIR=$LOGS_ROOT
 export YARN_OPTS="$YARN_OPTS $COMMON_JAVA_OPTS"

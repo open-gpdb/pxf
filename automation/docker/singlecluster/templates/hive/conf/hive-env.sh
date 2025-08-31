@@ -1,9 +1,5 @@
 # load singlecluster environment
-if [ -f $bin/../bin/gphd-env.sh ]; then
-	. $bin/../bin/gphd-env.sh
-elif [ -f $bin/../../bin/gphd-env.sh ]; then
-	. $bin/../../bin/gphd-env.sh
-fi
+. $GPHD_ROOT/bin/gphd-env.sh
 
 export HIVE_OPTS="-hiveconf derby.stream.error.file=$LOGS_ROOT/derby.log -hiveconf javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=$HIVE_STORAGE_ROOT/metastore_db;create=true"
 export HIVE_SERVER_OPTS="-hiveconf derby.stream.error.file=$LOGS_ROOT/derby.log -hiveconf ;databaseName=$HIVE_STORAGE_ROOT/metastore_db;create=true"

@@ -17,9 +17,7 @@ command=$1
 nodeid=$2
 
 # Load settings
-root=`cd \`dirname $0\`/..;pwd`
-bin=$root/bin
-. $bin/gphd-env.sh
+. $GPHD_ROOT/bin/gphd-env.sh
 
 instance_root=$PXF_STORAGE_ROOT/pxf$nodeid
 instance_name=pxf-service-$nodeid

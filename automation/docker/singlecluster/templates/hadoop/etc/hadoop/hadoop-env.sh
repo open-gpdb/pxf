@@ -1,5 +1,5 @@
 # load singlecluster environment
-. $bin/../../bin/gphd-env.sh
+. $GPHD_ROOT/bin/gphd-env.sh
 
 export HADOOP_CLASSPATH=\
 $HADOOP_CLASSPATH:\

@@ -20,7 +20,7 @@
 # */
 
 # load singlecluster environment
-. $bin/../../bin/gphd-env.sh
+. $GPHD_ROOT/bin/gphd-env.sh
 
 # Set environment variables here.
 
