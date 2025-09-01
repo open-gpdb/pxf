@@ -25,3 +25,7 @@ done
 
 # Wait for Namenode to leave safemode
 ${HADOOP_BIN}/hdfs dfsadmin -safemode wait || sleep 5
+
+# Report HDFS status
+${HADOOP_BIN}/hdfs dfsadmin -report
+${HADOOP_BIN}/hdfs fsck /

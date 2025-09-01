@@ -7,19 +7,31 @@ services:
     image: pxf/singlecluster:3
     container_name: pxf_singlecluster
 
-  # automation + all services are in the same docker compose file
+  # automation + all services in the same docker compose file
   universe:
     build:
       context: .
       dockerfile: docker/universe/Dockerfile
     container_name: universe
     hostname: mdw
-    #ports:
-    #  - "5432:5432"  # Greenplum Database
-    #  - "5888:5888"  # PXF Service
-    #  - "22:22"      # SSH
-    #volumes:
-    #  - ..:/home/gpadmin/workspace/pxf
+    ports:
+      - "5432:5432"  # Greenplum Database  (host:5432 -> container:5432)
+      - "5888:5888"  # PXF Service
+      - "9870:9870"  # Hadoop NameNode web UI
+      - "8020:8020"  # HDFS port
+      - "8088:8088"  # ResourceManager web UI
+      - "8042:8042"  # NodeManager web UI
+      - "2181:2181"  # Zookeeper client
+      - "9083:9083"  # Metastore port
+      - "10000:10000"  # HiveServer2 port
+      - "10002:10002"  # HiveServer2 web UI
+      - "16000:16000"  # HBase Master RPC
+      - "16010:16010"  # HBase Master web UI
+      - "16020:16020"  # HBase RegionServer RPC
+      - "16030:16030"  # HBase RegionServer web UI
+    volumes:
+      - ..:/home/gpadmin/workspace/pxf
+      - m2:/home/gpadmin/.m2
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5888/actuator/health", "-H 'Accept: application/json'", "--max-time", "5"]
       interval: 30s
