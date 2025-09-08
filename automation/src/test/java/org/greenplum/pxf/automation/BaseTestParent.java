@@ -77,14 +77,14 @@ public abstract class BaseTestParent {
             cluster = (PhdCluster) systemManager.getSystemObject("cluster");
 
             // Initialize HDFS system object
-            hdfs = (Hdfs) systemManager.getSystemObject(ProtocolUtils.getProtocol().value());
+            hdfs = (Hdfs) systemManager.getSystemObject("hdfs");
 
             String testPrincipal = cluster.getTestKerberosPrincipal();
             trySecureLogin(hdfs, testPrincipal);
 
             // Initialize non-secure HDFS system object (optional system object)
-            hdfsNonSecure = (Hdfs) systemManager.
-                    getSystemObject("/sut", "hdfsNonSecure", -1, (SystemObject) null, false, (String) null, SutFactory.getInstance().getSutInstance());
+            //hdfsNonSecure = (Hdfs) systemManager.
+            //        getSystemObject("/sut", "hdfsNonSecure", -1, (SystemObject) null, false, (String) null, SutFactory.getInstance().getSutInstance());
 
             // Create local Data folder
             File localDataTempFolder = new File(dataTempFolder);
