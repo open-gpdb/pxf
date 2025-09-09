@@ -29,9 +29,9 @@ services:
       - "16010:16010"  # HBase Master web UI
       - "16020:16020"  # HBase RegionServer RPC
       - "16030:16030"  # HBase RegionServer web UI
-    volumes:
-      - ..:/home/gpadmin/workspace/pxf
-      - m2:/home/gpadmin/.m2
+#    volumes:
+#      - ..:/home/gpadmin/workspace/pxf
+#      - m2:/home/gpadmin/.m2
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5888/actuator/health", "-H 'Accept: application/json'", "--max-time", "5"]
       interval: 30s
