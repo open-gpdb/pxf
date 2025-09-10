@@ -113,11 +113,6 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 # Prepare Hadoop
 # ----------------------------------------------------------------------
 $GPHD_ROOT/bin/init-gphd.sh
-
-# FIXME: remove after upgrading to new Hive version
-echo '' >> $HIVE_ROOT/conf/hive-env.sh
-echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> $HIVE_ROOT/conf/hive-env.sh
-
 $GPHD_ROOT/bin/start-gphd.sh
 
 # --------------------------------------------------------------------

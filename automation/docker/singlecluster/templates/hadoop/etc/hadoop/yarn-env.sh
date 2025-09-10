@@ -28,6 +28,10 @@ export HADOOP_YARN_USER=${HADOOP_YARN_USER:-yarn}
 
 # some Java parameters
 # export JAVA_HOME=/home/y/libexec/jdk1.6.0/
+
+# FIXME: remove after upgrading to new Hive version
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
 if [ "$JAVA_HOME" != "" ]; then
   #echo "run java in $JAVA_HOME"
   JAVA_HOME=$JAVA_HOME

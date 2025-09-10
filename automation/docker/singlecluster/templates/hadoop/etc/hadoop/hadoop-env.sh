@@ -19,3 +19,6 @@ export HADOOP_LOG_DIR=$LOGS_ROOT
 
 # The directory where pid files are stored. /tmp by default.
 export HADOOP_PID_DIR=$PIDS_ROOT
+
+# FIXME: remove after upgrading to new Hive version
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64

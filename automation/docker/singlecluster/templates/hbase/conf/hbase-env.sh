@@ -92,3 +92,6 @@ export HBASE_PID_DIR=$PIDS_ROOT
 
 # Tell HBase whether it should manage it's own instance of Zookeeper or not.
 export HBASE_MANAGES_ZK=false
+
+# FIXME: remove after upgrading to new Hive version
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
