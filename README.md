@@ -26,9 +26,6 @@ Contains command line interface code for PXF
 ## automation/
 Contains the automation and integration tests for PXF against the various datasources
 
-## singlecluster/
-Hadoop testing environment to exercise the pxf automation tests
-
 ## concourse/
 Resources for PXF's Continuous Integration pipelines
 

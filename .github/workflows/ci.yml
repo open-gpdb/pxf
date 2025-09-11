@@ -129,7 +129,8 @@ jobs:
           echo "Building automation images..."
           cd automation
           make copy-debs
-          docker compose build
+          docker compose build singlecluster
+          docker compose build universe
           docker compose up
 
       - name: Extract test artifacts from container

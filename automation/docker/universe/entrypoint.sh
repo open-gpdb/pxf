@@ -109,6 +109,12 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 # Start PXF
 /opt/greenplum-pxf-6/bin/pxf cluster start
 
+# ----------------------------------------------------------------------
+# Prepare Hadoop
+# ----------------------------------------------------------------------
+$GPHD_ROOT/bin/init-gphd.sh
+$GPHD_ROOT/bin/start-gphd.sh
+
 # --------------------------------------------------------------------
 # Run tests
 # --------------------------------------------------------------------
@@ -116,6 +122,10 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 sudo mkdir -p /home/gpadmin/.cache/go-build
 sudo chown -R gpadmin:gpadmin /home/gpadmin/.cache
 sudo chmod -R 755 /home/gpadmin/.cache
+# create .m2 cache directory
+sudo mkdir -p /home/gpadmin/.m2
+sudo chown -R gpadmin:gpadmin /home/gpadmin/.m2
+sudo chmod -R 755 /home/gpadmin/.m2
 
 # make without arguments runs all tests
 cd /home/gpadmin/workspace/pxf/automation

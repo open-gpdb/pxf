@@ -1,3 +1,7 @@
+FROM pxf/singlecluster:3
+
+# copy hadoop files from this image later...
+
 FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -5,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install dependencies
 # TODO: add pyton3-psutil to greenplum dependencies
 RUN apt-get update && \
-    apt-get install -y wget lsb-release locales openjdk-11-jre-headless iproute2 sudo python-psutil && \
+    apt-get install -y wget lsb-release locales openjdk-11-jre-headless openjdk-8-jre-headless iproute2 sudo python-psutil && \
     locale-gen en_US.UTF-8 && \
     locale-gen ru_RU.CP1251 && \
     locale-gen ru_RU.UTF-8 && \
@@ -92,6 +96,9 @@ ENV HBASE_ROOT=$GPHD_ROOT/hbase
 ENV HIVE_ROOT=$GPHD_ROOT/hive
 ENV ZOOKEEPER_ROOT=$GPHD_ROOT/zookeeper
 ENV PATH=$PATH:$GPHD_ROOT/bin:$HADOOP_ROOT/bin:$HBASE_ROOT/bin:$HIVE_ROOT/bin:$ZOOKEEPER_ROOT/bin
+
+COPY --from=pxf/singlecluster:3 $GPHD_ROOT $GPHD_ROOT
+RUN sudo chown -R gpadmin:gpadmin $GPHD_ROOT
 
 # --------------------------------------------------------------------
 # Run tests
