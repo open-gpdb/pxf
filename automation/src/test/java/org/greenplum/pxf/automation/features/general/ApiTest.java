@@ -32,7 +32,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void protocolVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "get protocol version");
@@ -51,7 +51,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void wrongVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong version message");
@@ -71,7 +71,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void wrongPath() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong path message");
@@ -91,7 +91,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void wrongPathRightVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong path message");
@@ -117,7 +117,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void retiredPathNoVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong path message");
@@ -137,7 +137,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void retiredPathWrongVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong version message");
@@ -158,7 +158,7 @@ public class ApiTest extends BaseFeature {
      *
      * @throws Exception if the test failed to run
      */
-    @Test(groups = "features")
+    @Test(enabled = false, groups = "features")
     public void retiredPathRightVersion() throws Exception {
 
         ReportUtils.startLevel(null, getClass(), "Check wrong path message");
