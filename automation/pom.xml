@@ -66,6 +66,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <argLine>-Xmx1024m</argLine>
+                    <argLine>-Xms256m</argLine>
+                    <excludedGroups>load</excludedGroups>
+                </configuration>
             </plugin>
         </plugins>
 
