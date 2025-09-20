@@ -65,6 +65,8 @@ gpinitsystem -a \
 
 ## Allow any host access the Cloudberry Cluster
 echo 'host all all 0.0.0.0/0 trust' >> /data0/database/master/gpseg-1/pg_hba.conf
+# 'testuser' for proxy-tests
+echo 'local all testuser trust' >> /data0/database/master/gpseg-1/pg_hba.conf
 
 # Configure PostgreSQL to listen on all interfaces
 echo "listen_addresses = '*'" >> /data0/database/master/gpseg-1/postgresql.conf
@@ -112,6 +114,11 @@ cp -v $PXF_HOME/templates/{hdfs,mapred,yarn,core,hbase,hive}-site.xml $PXF_BASE/
 # ----------------------------------------------------------------------
 # Prepare Hadoop
 # ----------------------------------------------------------------------
+# FIXME: reuse old scripts
+cd /home/gpadmin/workspace/pxf/automation
+make symlink_pxf_jars
+cp /home/gpadmin/automation_tmp_lib/pxf-hbase.jar $GPHD_ROOT/hbase/lib/
+
 $GPHD_ROOT/bin/init-gphd.sh
 $GPHD_ROOT/bin/start-gphd.sh
 
