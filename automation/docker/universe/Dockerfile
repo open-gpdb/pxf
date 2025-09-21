@@ -23,6 +23,9 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+COPY docker/universe/conf/90-gpdb-sysctl.conf /etc/sysctl.d/90-gpdb-sysctl.conf
+COPY docker/universe/conf/limits.conf /etc/security/limits.d/limits.conf
+
 # Copy Greenplum:
 COPY docker/universe/debs/greenplum-db-6_6.0.0-bionic-dev_amd64.deb /tmp/
 RUN apt-get install -y /tmp/greenplum-db-6_6.0.0-bionic-dev_amd64.deb && \
