@@ -28,3 +28,4 @@ include 'pxf-service',
         'pxf-json',
         'pxf-s3',
         'pxf-diagnostic'
+        'pxf-drivers'
