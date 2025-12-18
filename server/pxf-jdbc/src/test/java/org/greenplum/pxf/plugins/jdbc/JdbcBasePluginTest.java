@@ -344,8 +344,8 @@ public class JdbcBasePluginTest {
 
     @Test
     public void testGetConnectionErrorWithoutPassword1() throws SQLException {
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url");
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/test-url");
         configuration.set("jdbc.password", "");
 
         context.setServerName("test-server");
@@ -353,7 +353,7 @@ public class JdbcBasePluginTest {
         try {
             getPlugin(mockConnectionManager, mockSecureLogin, context);
         } catch (IllegalArgumentException e) {
-            assertEquals("JDBC password has not been set", e.getMessage());
+            assertEquals("PostgreSQL JDBC password has not been set", e.getMessage());
             return;
         }
         Assertions.fail("Expected an exception to be thrown due to missing password, but no exception was thrown.");
@@ -362,9 +362,9 @@ public class JdbcBasePluginTest {
     @Test
     public void testGetConnectionErrorWithoutPassword2() throws SQLException {
         configuration = new Configuration();
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/test-url");
         configuration.set("jdbc.user", "test-user");
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url");
         context.setConfiguration(configuration);
 
         context.setServerName("test-server");
@@ -372,7 +372,7 @@ public class JdbcBasePluginTest {
         try {
             getPlugin(mockConnectionManager, mockSecureLogin, context);
         } catch (IllegalArgumentException e) {
-            assertEquals("JDBC password has not been set", e.getMessage());
+            assertEquals("PostgreSQL JDBC password has not been set", e.getMessage());
             return;
         }
         Assertions.fail("Expected an exception to be thrown due to missing password, but no exception was thrown.");
@@ -381,8 +381,8 @@ public class JdbcBasePluginTest {
     @Test
     public void testGetConnectionWithPasswordInUrl() throws SQLException {
         configuration = new Configuration();
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url?password=test-password");
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/test-url?password=test-password");
         configuration.set("jdbc.user", "test-user");
 
         context.setServerName("test-server");
@@ -399,13 +399,13 @@ public class JdbcBasePluginTest {
         Properties properties = new Properties();
         properties.setProperty("user", "test-user");
 
-        verify(mockConnectionManager).getConnection("test-server", "test-url?password=test-password", properties, true, poolProps, null);
+        verify(mockConnectionManager).getConnection("test-server", "jdbc:postgresql://example.com/test-url?password=test-password", properties, true, poolProps, null);
     }
 
     @Test
     public void testGetConnectionErrorWithoutUser1() throws SQLException {
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url");
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/test-url");
         configuration.set("jdbc.user", "");
         configuration.set("jdbc.password", "test-password");
 
@@ -414,7 +414,7 @@ public class JdbcBasePluginTest {
         try {
             getPlugin(mockConnectionManager, mockSecureLogin, context);
         } catch (IllegalArgumentException e) {
-            assertEquals("JDBC user has not been set", e.getMessage());
+            assertEquals("PostgreSQL JDBC user has not been set", e.getMessage());
             return;
         }
         Assertions.fail("Expected an exception to be thrown due to missing user, but no exception was thrown.");
@@ -424,8 +424,8 @@ public class JdbcBasePluginTest {
     public void testGetConnectionErrorWithoutUser2() throws SQLException {
         configuration = new Configuration();
         configuration.set("jdbc.password", "test-password");
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url");
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/test-url");
         context.setConfiguration(configuration);
 
         context.setServerName("test-server");
@@ -433,7 +433,7 @@ public class JdbcBasePluginTest {
         try {
             getPlugin(mockConnectionManager, mockSecureLogin, context);
         } catch (IllegalArgumentException e) {
-            assertEquals("JDBC user has not been set", e.getMessage());
+            assertEquals("PostgreSQL JDBC user has not been set", e.getMessage());
             return;
         }
         Assertions.fail("Expected an exception to be thrown due to missing user, but no exception was thrown.");
@@ -442,8 +442,8 @@ public class JdbcBasePluginTest {
     @Test
     public void testGetConnectionWithUserAndPasswordInUrl() throws SQLException {
         configuration = new Configuration();
-        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
-        configuration.set("jdbc.url", "test-url?user=test-user&password=test-password");
+        configuration.set("jdbc.driver", "org.postgresql.Driver");
+        configuration.set("jdbc.url", "jdbc:postgresql://example.com/db?user=test-user&password=test-password");
         context.setConfiguration(configuration);
 
         context.setServerName("test-server");
@@ -456,7 +456,7 @@ public class JdbcBasePluginTest {
 
         assertSame(mockConnection, conn);
 
-        verify(mockConnectionManager).getConnection("test-server", "test-url?user=test-user&password=test-password", new Properties(), true, poolProps, null);
+        verify(mockConnectionManager).getConnection("test-server", "jdbc:postgresql://example.com/db?user=test-user&password=test-password", new Properties(), true, poolProps, null);
     }
 
     @Test
