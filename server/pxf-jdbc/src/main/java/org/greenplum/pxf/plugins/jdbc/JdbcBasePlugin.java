@@ -404,6 +404,13 @@ public class JdbcBasePlugin extends BasePlugin {
         return connection;
     }
 
+    /**
+     * Asserts whether all required JDBC URL params/properties set, throws IllegalArgumentException otherwise
+     *
+     * @param jdbcUrl   connection string
+     * @param username  username from properties (outside of connection string)
+     * @param password  password from properties (outside of connection string)
+     */
     private void assertJDBC(String jdbcUrl, String username, String password) {
         if (!StringUtils.startsWith(jdbcUrl, POSTGRESQL_URL_PREFIX)) {
             return;
