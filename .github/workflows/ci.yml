@@ -125,6 +125,7 @@ jobs:
 
       - name: Build automation images
         if: matrix.target.pxf == 'deb-pxf6-gpdb-bionic'  # FIXME: support other PXF versions
+        timeout-minutes: 180
         run: |
           echo "Building automation images..."
           cd automation
