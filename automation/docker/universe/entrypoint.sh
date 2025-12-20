@@ -50,20 +50,20 @@ echo "source /opt/greenplum-db-6/greenplum_path.sh"                     >> /home
 # ----------------------------------------------------------------------
 # Run gpinitsystem
 # ----------------------------------------------------------------------
-# Source Cloudberry environment variables
+# Source open-gpdb environment variables
 source /opt/greenplum-db-6/greenplum_path.sh
 export COORDINATOR_DATA_DIRECTORY=/data0/database/master/gpseg-1
 export MASTER_DATA_DIRECTORY=/data0/database/master/gpseg-1
 
 export USER=gpadmin
 
-# Initialize single node Cloudberry cluster
+# Initialize single node open-gpdb cluster
 gpinitsystem -a \
              -c /tmp/gpinitsystem_singlenode \
              -h /tmp/gpdb-hosts \
              --max_connections=100 || echo "gpinitsystem finished with exit code $?"
 
-## Allow any host access the Cloudberry Cluster
+## Allow any host access the open-gpdb Cluster
 echo 'host all all 0.0.0.0/0 trust' >> /data0/database/master/gpseg-1/pg_hba.conf
 # 'testuser' for proxy-tests
 echo 'local all testuser trust' >> /data0/database/master/gpseg-1/pg_hba.conf

@@ -16,7 +16,6 @@ jobs:
         target: # make targets
           - 'deb-gpdb-bionic'
           - 'deb-gpdb-jammy'
-          - 'deb-cbdb-jammy'
     steps:
       - name: Get Date
         id: get-date
@@ -34,7 +33,7 @@ jobs:
         with:
           submodules: true
 
-      - name: Build open-gpdb / cloudberry
+      - name: Build open-gpdb
         if: steps.cache-debs.outputs.cache-hit != 'true'
         run: make -C package ${{ matrix.target }}
 
@@ -50,8 +49,6 @@ jobs:
             db-cache-key-sfx: 'deb-gpdb-bionic'
           - pxf: 'deb-pxf6-gpdb-jammy'
             db-cache-key-sfx: 'deb-gpdb-jammy'
-          - pxf: 'deb-pxf6-cbdb-jammy'
-            db-cache-key-sfx: 'deb-cbdb-jammy'
     steps:
       - name: Get Date
         id: get-date
@@ -92,8 +89,6 @@ jobs:
             db-cache-key-sfx: 'deb-gpdb-bionic'
           - pxf: 'deb-pxf6-gpdb-jammy'
             db-cache-key-sfx: 'deb-gpdb-jammy'
-          - pxf: 'deb-pxf6-cbdb-jammy'
-            db-cache-key-sfx: 'deb-cbdb-jammy'
     steps:
       - name: Get Date
         id: get-date
