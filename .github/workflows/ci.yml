@@ -168,13 +168,14 @@ jobs:
           SKIPPED=0
           
           # Copy test artifacts
-          cp -r automation/test_artifacts/* artifacts/ 2>/dev/null || true
-          docker exec universe bash -c "cp -r /opt/greenplum-pxf-6/logs/* /tmp/pxf-logs/ 2>/dev/null || true" || true
+          docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/automation_logs/         /tmp/pxf-logs/ 2>/dev/null || true" || true
+          docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/log/                     /tmp/pxf-logs/ 2>/dev/null || true" || true
+          docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/target/surefire-reports/ /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker cp universe:/tmp/pxf-logs artifacts/logs/ 2>/dev/null || true
           
           # Parse surefire reports for automation tests
           if [[ "$TEST_GROUP" != "cli" && "$TEST_GROUP" != "server" ]]; then
-            for xml in pxf/automation/target/surefire-reports/TEST-*.xml; do
+            for xml in artifacts/logs/pxf-logs/surefire-reports/TEST-*.xml; do
               if [ -f "$xml" ]; then
                 tests=$(grep -oP 'tests="\K\d+' "$xml" 2>/dev/null | head -1 || echo "0")
                 failures=$(grep -oP 'failures="\K\d+' "$xml" 2>/dev/null | head -1 || echo "0")
