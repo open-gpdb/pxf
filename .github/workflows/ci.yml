@@ -87,8 +87,6 @@ jobs:
         target:
           - pxf: 'deb-pxf6-gpdb-bionic'
             db-cache-key-sfx: 'deb-gpdb-bionic'
-          - pxf: 'deb-pxf6-gpdb-jammy'
-            db-cache-key-sfx: 'deb-gpdb-jammy'
         test_group:
           - cli
           - external-table
