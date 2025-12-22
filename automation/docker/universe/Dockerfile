@@ -120,4 +120,3 @@ RUN sudo chmod -R 755 /home/gpadmin/workspace/pxf/automation
 
 COPY docker/universe/entrypoint.sh /entrypoint.sh
 RUN sudo chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
