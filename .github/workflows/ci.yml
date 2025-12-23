@@ -145,13 +145,14 @@ jobs:
           docker compose build singlecluster
           docker compose build universe
           docker compose up -d
+          docker exec universe bash -lc "/entrypoint.sh"
 
       - name: Run Test - ${{ matrix.test_group }}
         id: run_test
         continue-on-error: true
         timeout-minutes: 120
         run: |
-          docker exec universe bash -lc "/entrypoint.sh ${{ matrix.test_group }}"
+          docker exec universe bash -lc "/run_tests.sh ${{ matrix.test_group }}"
 
       - name: Collect artifacts and generate stats
         if: always()
