@@ -379,6 +379,17 @@ public class JdbcBasePluginTest {
     }
 
     @Test
+    public void testGetConnectionErrorWithoutPassword3() throws SQLException {
+        configuration.set("jdbc.driver", "org.greenplum.pxf.plugins.jdbc.FakeJdbcDriver");
+        configuration.set("jdbc.url", "jdbc:sqlserver://localhost:1433;databaseName=db1;user=admin");
+
+        context.setServerName("test-server");
+
+        // non-PostgreSQL drivers are not subject to credential validation
+        getPlugin(mockConnectionManager, mockSecureLogin, context);
+    }
+
+    @Test
     public void testGetConnectionWithPasswordInUrl() throws SQLException {
         configuration = new Configuration();
         configuration.set("jdbc.driver", "org.postgresql.Driver");
