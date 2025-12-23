@@ -602,17 +602,19 @@ public abstract class TableFactory {
      * @param interval interval expression
      * @param user database user
      * @param partitionType partition type used to get fragments
+     * @param customParameters - custom parameters to JDBC URL
      * @return PXF Readable External or Foreign table
      */
     public static ExternalTable getPxfJdbcReadablePartitionedTable(
             String name,
             String[] fields, String dataSourcePath, String driver,
             String dbUrl, Integer partitionByColumnIndex,
-            String rangeExpression, String interval, String user, EnumPartitionType partitionType, String server) {
+            String rangeExpression, String interval, String user, EnumPartitionType partitionType, String server,
+            String customParameters) {
 
         return getPxfJdbcReadableTable(name, fields, dataSourcePath, driver,
             dbUrl, true, partitionByColumnIndex, rangeExpression,
-            interval, user, partitionType, server, null);
+            interval, user, partitionType, server, customParameters);
     }
 
     /**
