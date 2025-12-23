@@ -2,6 +2,8 @@
 set -e
 set -x
 
+export PGPORT=5432
+
 # if group name is passed as an argument, run make with GROUP parameter
 # otherwise run make without arguments (runs all tests)
 cd /home/gpadmin/workspace/pxf/automation
