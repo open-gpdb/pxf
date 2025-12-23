@@ -16,7 +16,7 @@ Greenplum 6 on Centos / Redhat 7 operating systems.
 # How it works
 
 We use docker as clean build environment. Build is consists of two stages:
-1. Build open-gpdb / cloudberry and save deb file to `downloads/`
+1. Build open-gpdb and save deb file to `downloads/`
 2. Build PXF using deb file from `downloads/` and save resulting deb to `downloads/`
 
 ## GP/PXF DEB specification
