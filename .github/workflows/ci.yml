@@ -171,6 +171,7 @@ jobs:
           # Copy test artifacts
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/automation_logs/         /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/log/                     /tmp/pxf-logs/ 2>/dev/null || true" || true
+          docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/sqlrepo/                 /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/target/surefire-reports/ /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker cp universe:/tmp/pxf-logs artifacts/logs/ 2>/dev/null || true
           
