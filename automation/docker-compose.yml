@@ -14,6 +14,8 @@ services:
       dockerfile: docker/universe/Dockerfile
     container_name: universe
     hostname: mdw
+    depends_on:
+      - singlecluster
     ports:
       - "5432:5432"  # Greenplum Database  (host:5432 -> container:5432)
       - "5888:5888"  # PXF Service
@@ -32,11 +34,7 @@ services:
 #    volumes:
 #      - ..:/home/gpadmin/workspace/pxf
 #      - m2:/home/gpadmin/.m2
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5888/actuator/health", "-H 'Accept: application/json'", "--max-time", "5"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
+    command: ["tail", "-f", "/dev/null"]
 
 networks:
   default:

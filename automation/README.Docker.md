@@ -5,9 +5,13 @@
 ```bash
 cd automation
 make copy-debs
+docker compose down
 docker compose build singlecluster
 docker compose build universe
-docker compose up
+docker compose up -d
+docker exec universe bash -lc "/entrypoint.sh"
+
+docker exec universe bash -lc "/run_tests.sh jdbc"
 ```
 
 Investigate any issues:

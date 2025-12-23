@@ -31,6 +31,7 @@ public abstract class DbSystemObject extends BaseSystemObject implements IDbFunc
 	protected String masterHost;
 	protected String port;
 	protected String userName;
+	protected String password;
     protected String kerberosPrincipal;
 	protected String driver;
 	protected String address;
@@ -537,6 +538,14 @@ public abstract class DbSystemObject extends BaseSystemObject implements IDbFunc
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public int getConnectionRetries() {

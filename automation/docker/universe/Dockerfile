@@ -67,7 +67,7 @@ RUN ssh-keygen -A && \
 # Add gpadmin to sudoers and run preparation scripts as gpadmin
 # --------------------------------------------------------------------
 RUN usermod -a -G sudo gpadmin && \
-  echo "gpadmin:cbdb@123" | chpasswd && \
+  echo "gpadmin:cbdb_123" | chpasswd && \
   echo "gpadmin        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers && \
   echo "root           ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 
@@ -120,4 +120,5 @@ RUN sudo chmod -R 755 /home/gpadmin/workspace/pxf/automation
 
 COPY docker/universe/entrypoint.sh /entrypoint.sh
 RUN sudo chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY docker/universe/run_tests.sh /run_tests.sh
+RUN sudo chmod +x /run_tests.sh
