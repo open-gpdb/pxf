@@ -75,7 +75,7 @@ echo "port = 5432" >> /data0/database/master/gpseg-1/postgresql.conf
 gpstop -u && echo "pg_hba.conf has been reloaded"
 
 psql -d template1 \
-     -c "ALTER USER gpadmin PASSWORD 'cbdb@123'"
+     -c "ALTER USER gpadmin PASSWORD 'cbdb_123'"
 
 ## Set gpadmin password, display version and cluster configuration
 psql -P pager=off -d template1 -c "SELECT VERSION()"

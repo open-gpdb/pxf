@@ -363,7 +363,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableColumns.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName());
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword());
         pxfJdbcColumns.setHost(pxfHost);
         pxfJdbcColumns.setPort(pxfPort);
         gpdb.createTableAndVerify(pxfJdbcColumns);
@@ -376,7 +377,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableColumns.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName());
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword());
         pxfJdbcColumnProjectionSubset.setHost(pxfHost);
         pxfJdbcColumnProjectionSubset.setPort(pxfPort);
         gpdb.createTableAndVerify(pxfJdbcColumnProjectionSubset);
@@ -389,7 +391,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableColumns.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName());
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword());
         pxfJdbcColumnProjectionSuperset.setHost(pxfHost);
         pxfJdbcColumnProjectionSuperset.setPort(pxfPort);
         gpdb.createTableAndVerify(pxfJdbcColumnProjectionSuperset);
@@ -402,7 +405,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableTypes.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName(), "FETCH_SIZE=0");
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword() + "&FETCH_SIZE=0");
         pxfJdbcSingleFragment.setHost(pxfHost);
         pxfJdbcSingleFragment.setPort(pxfPort);
         gpdb.createTableAndVerify(pxfJdbcSingleFragment);
@@ -415,7 +419,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableTypesWithDateWideRange.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName());
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword());
         pxfJdbcDateWideRangeOn.setHost(pxfHost);
         pxfJdbcDateWideRangeOn.setPort(pxfPort);
         pxfJdbcDateWideRangeOn.addUserParameter("date_wide_range=true");
@@ -427,7 +432,8 @@ public class JdbcTest extends BaseFeature {
                 gpdbNativeTableTypesWithDateWideRange.getName(),
                 POSTGRES_DRIVER_CLASS,
                 GPDB_PXF_AUTOMATION_DB_JDBC + gpdb.getMasterHost() + ":" + gpdb.getPort() + "/pxfautomation",
-                gpdb.getUserName());
+                gpdb.getUserName(),
+                "PASS=" + gpdb.getPassword());
         pxfJdbcDateWideRangeOff.setHost(pxfHost);
         pxfJdbcDateWideRangeOff.setPort(pxfPort);
         pxfJdbcDateWideRangeOff.addUserParameter("date_wide_range=false");

@@ -67,7 +67,7 @@ RUN ssh-keygen -A && \
 # Add gpadmin to sudoers and run preparation scripts as gpadmin
 # --------------------------------------------------------------------
 RUN usermod -a -G sudo gpadmin && \
-  echo "gpadmin:cbdb@123" | chpasswd && \
+  echo "gpadmin:cbdb_123" | chpasswd && \
   echo "gpadmin        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers && \
   echo "root           ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 

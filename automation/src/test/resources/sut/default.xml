@@ -9,6 +9,8 @@
         <host>localhost</host>
         <masterHost>localhost</masterHost>
         <db>pxfautomation</db>
+        <userName>gpadmin</userName>
+        <password>cbdb_123</password>
     </gpdb>
 
     <gpdb2>
@@ -97,6 +99,6 @@
         <PGDATABASE></PGDATABASE>
         <PGHOST></PGHOST>
         <userName>gpadmin</userName>
-        <password>cbdb@123</password>
+        <password>cbdb_123</password>
     </shellsystemobject>
 </sut>
