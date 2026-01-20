@@ -65,7 +65,7 @@ dependencies {
     implementation("net.sf.opencsv:opencsv")                         { transitive = false }
 
     // transitive dependency required by MapR
-    implementation("org.json:json:20090211")                         { transitive = false }
+    implementation("org.json:json:20251224")                         { transitive = false }
 
     /*******************************
      * Test Dependencies
