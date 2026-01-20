@@ -97,7 +97,7 @@ configure(javaProjects) {
             dependency("net.sf.opencsv:opencsv:2.3")
             dependency("org.antlr:antlr-runtime:3.5.2")
             dependency("org.apache.commons:commons-compress:1.20")
-            dependency("org.apache.htrace:htrace-core:3.1.0-incubating")
+            dependency("org.apache.htrace:htrace-core:4.0.0-incubating")
             dependency("org.apache.htrace:htrace-core4:4.0.1-incubating")
 
             dependency("org.apache.zookeeper:zookeeper:3.4.6")
