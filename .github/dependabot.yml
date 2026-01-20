@@ -4,15 +4,19 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 0
   - package-ecosystem: "gomod"
     directory: "/cli"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 0
   - package-ecosystem: "gradle"
     directory: "/server"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 0
   - package-ecosystem: "maven"
     directory: "/automation"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 0
