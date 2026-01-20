@@ -168,7 +168,7 @@
         <dependency>
             <groupId>org.jsystemtest</groupId>
             <artifactId>jsystemCore</artifactId>
-            <version>6.1.06</version>
+            <version>6.1.12</version>
             <exclusions>
                 <!--  javax.comm provides applications access to RS-232 hardware - not needed -->
                 <exclusion>
