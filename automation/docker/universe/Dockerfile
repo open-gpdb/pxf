@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install dependencies
 # TODO: add pyton3-psutil to greenplum dependencies
 RUN apt-get update && \
-    apt-get install -y wget lsb-release locales openjdk-11-jre-headless openjdk-8-jre-headless iproute2 sudo python-psutil && \
+    apt-get install -y wget lsb-release locales openjdk-11-jdk-headless openjdk-8-jdk-headless iproute2 sudo python-psutil && \
     locale-gen en_US.UTF-8 && \
     locale-gen ru_RU.CP1251 && \
     locale-gen ru_RU.UTF-8 && \
