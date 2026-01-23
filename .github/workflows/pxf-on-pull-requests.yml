@@ -5,6 +5,7 @@ on:
       - 'server/**'
     branches:
       - main
+      - MDB_STABLE
   pull_request:
     paths:
       - 'server/**'
