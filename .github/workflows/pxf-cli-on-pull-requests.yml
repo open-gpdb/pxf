@@ -5,6 +5,7 @@ on:
       - 'cli/**'
     branches:
       - main
+      - MDB_STABLE
   pull_request:
     paths:
       - 'cli/**'

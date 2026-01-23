@@ -2,9 +2,9 @@ name: PXF CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, MDB_STABLE ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, MDB_STABLE ]
 
 jobs:
   build_gpdb_debs:
