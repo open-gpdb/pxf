@@ -24,7 +24,7 @@ under the License.
 
 Use the PXF HDFS Connector to read and write Avro-format data. This section describes how to use PXF to read and write Avro data in HDFS, including how to create, query, and insert into an external table that references an Avro file in the HDFS data store.
 
-PXF supports reading or writing Avro files compressed with these codecs: `bzip2`, `xz`, `snappy`, and `deflate`.
+PXF supports reading or writing Avro files compressed with these codecs: `bzip2`, `xz`, `snappy`, `zstandard` and `deflate`.
 
 ## <a id="prereq"></a>Prerequisites
 
@@ -171,8 +171,8 @@ The PXF `hdfs:avro` profile supports encoding- and compression-related write opt
 
 | Write Option  | Value Description |
 |-------|-------------------------------------|
-| COMPRESSION_CODEC    | The compression codec alias. Supported compression codecs for writing Avro data include: `bzip2`, `xz`, `snappy`, `deflate`, and `uncompressed` . If this option is not provided, PXF compresses the data using `deflate` compression. |
-| CODEC_LEVEL    | The compression level (applicable to the `deflate` and `xz` codecs only). This level controls the trade-off between speed and compression. Valid values are 1 (fastest) to 9 (most compressed). The default compression level is 6. |
+| COMPRESSION_CODEC    | The compression codec alias. Supported compression codecs for writing Avro data include: `bzip2`, `xz`, `snappy`, `deflate`, `zstandard` and `uncompressed` . If this option is not provided, PXF compresses the data using `deflate` compression. |
+| CODEC_LEVEL    | The compression level (applicable to the `deflate`, `zstandard` and `xz` codecs only). This level controls the trade-off between speed and compression. Valid values are 1 (fastest) to 9 (most compressed). The default compression level is 6. |
 
 ## <a id="avro_example"></a>Example: Reading Avro Data
 
