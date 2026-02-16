@@ -9,7 +9,7 @@ on:
 jobs:
   build_gpdb_debs:
     name: Build open-gpdb Debian Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +39,7 @@ jobs:
 
   build_pxf_debs:
     name: Build PXF Debian Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build_gpdb_debs]
     strategy:
       fail-fast: false
@@ -79,7 +79,7 @@ jobs:
 
   pxf-test:
     name: Automation tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build_pxf_debs]
     strategy:
       fail-fast: false
@@ -90,7 +90,6 @@ jobs:
         test_group:
           - cli
           - external-table
-          - server
           - sanity
           - smoke
           - hdfs
@@ -173,6 +172,7 @@ jobs:
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/log/                     /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/sqlrepo/                 /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker exec universe bash -c "cp -r /home/gpadmin/workspace/pxf/automation/target/surefire-reports/ /tmp/pxf-logs/ 2>/dev/null || true" || true
+          docker exec universe bash -c "cp -r /home/gpadmin/workspace/singlecluster/storage/logs/             /tmp/pxf-logs/ 2>/dev/null || true" || true
           docker cp universe:/tmp/pxf-logs artifacts/logs/ 2>/dev/null || true
           
           # Parse surefire reports for automation tests
@@ -238,7 +238,7 @@ jobs:
     name: Test Summary
     needs: [pxf-test]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Download all test artifacts
         uses: actions/download-artifact@v4

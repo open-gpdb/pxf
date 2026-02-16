@@ -52,7 +52,7 @@ RUN wget -O - "https://go.dev/dl/go1.24.5.linux-amd64.tar.gz" | tar -C /usr/loca
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 # automation uses maven and different tools
-RUN apt-get install -y maven unzip openssh-server
+RUN apt-get install -y maven unzip openssh-server make
 
 # configure ssh as described in automation/README.md
 RUN ssh-keygen -A && \
