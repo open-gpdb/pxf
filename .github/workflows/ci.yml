@@ -9,7 +9,7 @@ on:
 jobs:
   build_gpdb_debs:
     name: Build open-gpdb Debian Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +39,7 @@ jobs:
 
   build_pxf_debs:
     name: Build PXF Debian Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build_gpdb_debs]
     strategy:
       fail-fast: false
@@ -79,7 +79,7 @@ jobs:
 
   pxf-test:
     name: Automation tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build_pxf_debs]
     strategy:
       fail-fast: false
@@ -238,7 +238,7 @@ jobs:
     name: Test Summary
     needs: [pxf-test]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Download all test artifacts
         uses: actions/download-artifact@v4
