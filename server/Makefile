@@ -36,7 +36,10 @@ help:
 	@echo	"  - test - runs unit tests for all PXF modules"
 	@echo   "  - coverage - runs unit tests for all PXF modules and gives a coverage report"
 	@echo	"  - install - setup PXF in the configured deployPath"
-	@echo	"  - stage - build PXF server and stage resulting artifacts for packaging"
+	@echo	"  - stage - build PXF server and stage resulting artifacts for packaging (no JDBC drivers in build/stage/lib)"
+	@echo	"  - stage-notest - same as stage but skip tests (no JDBC drivers in build/stage/lib)"
+	@echo	"  - stage-jdbc-drivers - copy JDBC driver JARs to build/stage/lib (run after stage if full layout needed)"
+	@echo	"  - stage-with-jdbc-drivers - full stage without tests plus JDBC drivers in build/stage/lib"
 	@echo	"  - doc - creates aggregate javadoc under docs"
 
 all:
@@ -90,6 +93,13 @@ stage-notest:
 	install -m 700 -d "build/stage/logs"
 	install -m 700 -d "build/stage/run"
 	install -m 700 -d "build/stage/keytabs"
+
+.PHONY: stage-jdbc-drivers
+stage-jdbc-drivers:
+	./gradlew $(PXF_GRADLE_PROPERTIES) stageJdbcDrivers
+
+.PHONY: stage-with-jdbc-drivers
+stage-with-jdbc-drivers: stage-notest stage-jdbc-drivers
 
 clean:
 	./gradlew clean

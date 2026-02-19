@@ -364,3 +364,11 @@ task stage(type: Copy) {
 
     doLast { new File("${buildDir}/stage/version").text = "${version}\n" }
 }
+
+task stageJdbcDrivers(type: Copy) {
+    description "Copy JDBC driver JARs from pxf-jdbc-drivers to build/stage/lib."
+    dependsOn ":pxf-jdbc-drivers:jar"
+    from(project(':pxf-jdbc-drivers').configurations.runtimeClasspath)
+    into("${buildDir}/stage/lib")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
