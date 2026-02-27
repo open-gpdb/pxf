@@ -40,6 +40,7 @@ help:
 	@echo	"  - stage-notest - same as stage but skip tests (no JDBC drivers in build/stage/lib)"
 	@echo	"  - stage-jdbc-drivers - copy JDBC driver JARs to build/stage/lib (run after stage if full layout needed)"
 	@echo	"  - stage-with-jdbc-drivers - full stage without tests plus JDBC drivers in build/stage/lib"
+	@echo	"  - install-jdbc-drivers - setup PXF JDBC drivers in the configured PXF_HOME"
 	@echo	"  - doc - creates aggregate javadoc under docs"
 
 all:
@@ -98,8 +99,13 @@ stage-notest:
 stage-jdbc-drivers:
 	./gradlew $(PXF_GRADLE_PROPERTIES) stageJdbcDrivers
 
-.PHONY: stage-with-jdbc-drivers
-stage-with-jdbc-drivers: stage-notest stage-jdbc-drivers
+.PHONY: install
+install-jdbc-drivers: stage-jdbc-drivers
+	@if [ -z "$(PXF_HOME)" ]; then \
+		echo "ERROR: PXF_HOME is not set"; exit 2; \
+	fi
+	mkdir -p "$(PXF_HOME)"/lib
+	cp -R build/stage/lib/* "$(PXF_HOME)"/lib
 
 clean:
 	./gradlew clean
