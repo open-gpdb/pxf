@@ -39,7 +39,6 @@ help:
 	@echo	"  - stage - build PXF server and stage resulting artifacts for packaging (no JDBC drivers in build/stage/lib)"
 	@echo	"  - stage-notest - same as stage but skip tests (no JDBC drivers in build/stage/lib)"
 	@echo	"  - stage-jdbc-drivers - copy JDBC driver JARs to build/stage/lib (run after stage if full layout needed)"
-	@echo	"  - stage-with-jdbc-drivers - full stage without tests plus JDBC drivers in build/stage/lib"
 	@echo	"  - install-jdbc-drivers - setup PXF JDBC drivers in the configured PXF_HOME"
 	@echo	"  - doc - creates aggregate javadoc under docs"
 
