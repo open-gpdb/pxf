@@ -14,7 +14,6 @@ dist/
 
 HELP.md
 build/
-!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
 
@@ -45,3 +44,5 @@ out/
 *.zip
 *.tar.gz
 *.rar
+# ASF Policies do not allow compiled binaries in the source tarballs
+gradle/wrapper/gradle-wrapper.jar

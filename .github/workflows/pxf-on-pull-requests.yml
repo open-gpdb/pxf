@@ -25,4 +25,6 @@ jobs:
           distribution: 'corretto'
       - name: Assemble and test with Gradle
         working-directory: ./server
-        run: ./gradlew build --no-daemon
+        run: |
+          make prepare-gradle-wrapper
+          ./gradlew build --no-daemon
