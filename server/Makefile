@@ -96,6 +96,7 @@ stage-notest:
 
 .PHONY: stage-jdbc-drivers
 stage-jdbc-drivers:
+	rm -rfv build/stage/lib
 	./gradlew $(PXF_GRADLE_PROPERTIES) stageJdbcDrivers
 
 .PHONY: install
@@ -104,6 +105,7 @@ install-jdbc-drivers: stage-jdbc-drivers
 		echo "ERROR: PXF_HOME is not set"; exit 2; \
 	fi
 	mkdir -p "$(PXF_HOME)"/lib
+	rm -fv "$(PXF_HOME)"/lib/*.jar
 	cp -R build/stage/lib/* "$(PXF_HOME)"/lib
 
 clean:
