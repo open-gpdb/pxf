@@ -1,5 +1,6 @@
 package org.greenplum.pxf.service.controller;
 
+import org.apache.cloudberry.pxf.service.activity.ActiveRequestRegistry;
 import org.apache.hadoop.conf.Configuration;
 import org.greenplum.pxf.api.error.PxfRuntimeException;
 import org.greenplum.pxf.api.io.Writable;
@@ -75,7 +76,7 @@ public class ReadServiceImplTest {
             return result;
         });
 
-        readService = new ReadServiceImpl(mockConfigurationFactory, mockBridgeFactory, mockSecurityService, mockFragmenterService, mockMetricReporter);
+        readService = new ReadServiceImpl(mockConfigurationFactory, mockBridgeFactory, mockSecurityService, mockFragmenterService, mockMetricReporter, new ActiveRequestRegistry());
     }
 
     @Test

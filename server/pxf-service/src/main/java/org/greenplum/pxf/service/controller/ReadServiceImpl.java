@@ -2,6 +2,7 @@ package org.greenplum.pxf.service.controller;
 
 import com.google.common.io.CountingOutputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cloudberry.pxf.service.activity.ActiveRequestRegistry;
 import org.apache.commons.lang.StringUtils;
 import org.greenplum.pxf.api.io.Writable;
 import org.greenplum.pxf.api.model.ConfigurationFactory;
@@ -35,18 +36,20 @@ public class ReadServiceImpl extends BaseServiceImpl<OperationStats> implements 
     /**
      * Creates a new instance.
      *
-     * @param configurationFactory configuration factory
-     * @param bridgeFactory        bridge factory
-     * @param securityService      security service
-     * @param fragmenterService    fragmenter service
-     * @param metricsReporter      metrics reporter service
+     * @param configurationFactory  configuration factory
+     * @param bridgeFactory         bridge factory
+     * @param securityService       security service
+     * @param fragmenterService     fragmenter service
+     * @param metricsReporter       metrics reporter service
+     * @param activeRequestRegistry registry of in-flight requests
      */
     public ReadServiceImpl(ConfigurationFactory configurationFactory,
                            BridgeFactory bridgeFactory,
                            SecurityService securityService,
                            FragmenterService fragmenterService,
-                           MetricsReporter metricsReporter) {
-        super("Read", configurationFactory, bridgeFactory, securityService, metricsReporter);
+                           MetricsReporter metricsReporter,
+                           ActiveRequestRegistry activeRequestRegistry) {
+        super("Read", configurationFactory, bridgeFactory, securityService, metricsReporter, activeRequestRegistry);
         this.fragmenterService = fragmenterService;
     }
 
@@ -84,6 +87,13 @@ public class ReadServiceImpl extends BaseServiceImpl<OperationStats> implements 
         try {
             List<Fragment> fragments = fragmenterService.getFragmentsForSegment(context);
             for (int i = 0; i < fragments.size(); i++) {
+                // stop before starting the next fragment if the request was
+                // cancelled via pxf_cancel_backend
+                if (isCancelled()) {
+                    log.info("Read of resource {} cancelled after {} of {} fragments",
+                            context.getDataSource(), i, fragments.size());
+                    break;
+                }
                 Fragment fragment = fragments.get(i);
                 sourceName = fragment.getSourceName();
                 String profile = fragment.getProfile();
@@ -148,6 +158,8 @@ public class ReadServiceImpl extends BaseServiceImpl<OperationStats> implements 
         Bridge bridge = null;
         try {
             bridge = getBridge(context);
+            // expose the bridge so pxf_cancel_backend can end it mid-read
+            attachBridge(bridge);
             if (!bridge.beginIteration()) {
                 log.debug("Skipping streaming fragment {} of resource {}",
                         context.getFragmentIndex(), context.getDataSource());
@@ -167,6 +179,9 @@ public class ReadServiceImpl extends BaseServiceImpl<OperationStats> implements 
                     bridge.endIteration();
                 } catch (Exception e) {
                     log.warn("Ignoring error encountered during bridge.endIteration()", e);
+                } finally {
+                    // stop exposing the now-closed bridge to pxf_cancel_backend
+                    attachBridge(null);
                 }
             }
             Duration duration = Duration.between(startTime, Instant.now());
