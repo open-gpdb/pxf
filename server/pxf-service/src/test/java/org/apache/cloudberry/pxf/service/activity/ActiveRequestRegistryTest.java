@@ -19,9 +19,9 @@ package org.apache.cloudberry.pxf.service.activity;
  * under the License.
  */
 
-import org.apache.cloudberry.pxf.api.io.Writable;
-import org.apache.cloudberry.pxf.api.model.RequestContext;
-import org.apache.cloudberry.pxf.service.bridge.Bridge;
+import org.greenplum.pxf.api.io.Writable;
+import org.greenplum.pxf.api.model.RequestContext;
+import org.greenplum.pxf.service.bridge.Bridge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
