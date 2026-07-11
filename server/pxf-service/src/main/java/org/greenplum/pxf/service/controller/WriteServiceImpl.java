@@ -91,7 +91,7 @@ public class WriteServiceImpl extends BaseServiceImpl<OperationStats> implements
             }
 
 
-        // in the case where we fail to report a record due to an exception,
+            // in the case where we fail to report a record due to an exception,
             // report the number of bytes that we were able to read before failure
             operationStats.setByteCount(countingInputStream.getCount());
             operationStats.flushStats();
