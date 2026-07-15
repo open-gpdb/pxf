@@ -15,6 +15,20 @@ RUN apt-get update && \
     locale-gen ru_RU.UTF-8 && \
     update-locale LANG=en_US.UTF-8
 
+
+# Install Gradle and warm wrapper cache (it will download GRADLE_VERSION again)
+# (version must match server/gradle/wrapper/gradle-wrapper.properties)
+ARG GRADLE_VERSION=8.14.4
+RUN curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+      -o /tmp/gradle.zip && \
+    sudo unzip -q /tmp/gradle.zip -d /opt && \
+    sudo ln -s "/opt/gradle-${GRADLE_VERSION}/bin/gradle" /usr/local/bin/gradle && \
+    rm /tmp/gradle.zip && \
+    mkdir -p /tmp/gradle-wrapper-warm && cd /tmp/gradle-wrapper-warm && \
+    gradle init && gradle wrapper --gradle-version ${GRADLE_VERSION} && ./gradlew javaToolchains && \
+    cd / && rm -rf /tmp/gradle-wrapper-warm
+ENV GRADLE_HOME="/opt/gradle-${GRADLE_VERSION}"
+
 # --------------------------------------------------------------------
 # Install Greenplum and PXF
 # --------------------------------------------------------------------
