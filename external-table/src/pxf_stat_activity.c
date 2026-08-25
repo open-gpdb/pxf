@@ -34,38 +34,18 @@
  */
 
 #include "libchurl.h"
+#include "pxfuriparser.h"
+#include "pxfutils.h"
 
-#include "fmgr.h"
 #include "funcapi.h"
-#include "lib/stringinfo.h"
 #include "cdb/cdbvars.h"
 #include "utils/builtins.h"
 
-/* PXF service defaults, mirror of pxf_option.h / external-table pxfutils.h */
-#define PXF_STAT_DEFAULT_HOST "localhost"
-#define PXF_STAT_DEFAULT_PORT "5888"
-#define PXF_STAT_SERVICE_PREFIX "pxf"
 #define PXF_STAT_READ_BUFFER_SIZE (64 * 1024)
 
 PG_FUNCTION_INFO_V1(pxf_stat_activity_raw);
 
 Datum		pxf_stat_activity_raw(PG_FUNCTION_ARGS);
-
-/*
- * Returns the PXF service authority (host:port) for the local instance,
- * honoring the PXF_HOST / PXF_PORT environment variables and falling back to
- * localhost:5888, consistent with how segments reach their local PXF.
- */
-static char *
-get_pxf_stat_authority(void)
-{
-	char	   *host = getenv("PXF_HOST");
-	char	   *port = getenv("PXF_PORT");
-
-	return psprintf("%s:%s",
-					host ? host : PXF_STAT_DEFAULT_HOST,
-					port ? port : PXF_STAT_DEFAULT_PORT);
-}
 
 /*
  * Issues an HTTP GET to the local PXF /pxf/stat_activity endpoint, scoped to
@@ -87,7 +67,7 @@ fetch_stat_activity_body(void)
 	/* build the request URI for the local PXF instance */
 	initStringInfo(&uri);
 	appendStringInfo(&uri, "http://%s/%s/stat_activity",
-					 get_pxf_stat_authority(), PXF_STAT_SERVICE_PREFIX);
+					 get_authority(), PXF_SERVICE_PREFIX);
 
 	/* scope the request to this segment so co-located segments don't duplicate */
 	snprintf(segment_id, sizeof(segment_id), "%d", GpIdentity.segindex);
@@ -100,6 +80,9 @@ fetch_stat_activity_body(void)
 		 GpIdentity.segindex, uri.data);
 
 	handle = churl_init_download(uri.data, headers);
+
+	/* read some bytes to make sure the connection is established */
+	churl_read_check_connectivity(handle);
 
 	/* read the full JSON body */
 	initStringInfo(&response);
@@ -124,7 +107,7 @@ fetch_stat_activity_body(void)
  * pxf_stat_activity_raw
  *
  * Set-returning function dispatched with EXECUTE ON ALL SEGMENTS (which
- * Cloudberry only permits for set-returning functions). Each segment emits a
+ * Greenplum only permits for set-returning functions). Each segment emits a
  * single row: the raw JSON response body from its local PXF instance, scoped to
  * that segment. The pxf_stat_activity view unions these rows and expands them
  * into typed columns.

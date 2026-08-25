@@ -35,17 +35,13 @@
  */
 
 #include "libchurl.h"
+#include "pxfuriparser.h"
+#include "pxfutils.h"
 
-#include "fmgr.h"
 #include "funcapi.h"
-#include "lib/stringinfo.h"
 #include "cdb/cdbvars.h"
 #include "utils/builtins.h"
 
-/* PXF service defaults, mirror of pxf_stat_activity.c */
-#define PXF_CANCEL_DEFAULT_HOST "localhost"
-#define PXF_CANCEL_DEFAULT_PORT "5888"
-#define PXF_CANCEL_SERVICE_PREFIX "pxf"
 #define PXF_CANCEL_READ_BUFFER_SIZE (64 * 1024)
 
 PG_FUNCTION_INFO_V1(pxf_cancel_backend_raw);
@@ -53,22 +49,6 @@ PG_FUNCTION_INFO_V1(pxf_interrupt_backend_raw);
 
 Datum		pxf_cancel_backend_raw(PG_FUNCTION_ARGS);
 Datum		pxf_interrupt_backend_raw(PG_FUNCTION_ARGS);
-
-/*
- * Returns the PXF service authority (host:port) for the local instance,
- * honoring the PXF_HOST / PXF_PORT environment variables and falling back to
- * localhost:5888, consistent with how segments reach their local PXF.
- */
-static char *
-get_pxf_cancel_authority(void)
-{
-	char	   *host = getenv("PXF_HOST");
-	char	   *port = getenv("PXF_PORT");
-
-	return psprintf("%s:%s",
-					host ? host : PXF_CANCEL_DEFAULT_HOST,
-					port ? port : PXF_CANCEL_DEFAULT_PORT);
-}
 
 /*
  * Issues an HTTP GET to the given local PXF endpoint, scoped to this segment and
@@ -91,7 +71,7 @@ fetch_backend_control_body(const char *endpoint, int32 session_id)
 	/* build the request URI for the local PXF instance */
 	initStringInfo(&uri);
 	appendStringInfo(&uri, "http://%s/%s/%s",
-					 get_pxf_cancel_authority(), PXF_CANCEL_SERVICE_PREFIX, endpoint);
+					 get_authority(), PXF_SERVICE_PREFIX, endpoint);
 
 	/* scope the request to this segment so co-located segments don't act twice */
 	snprintf(segment_id, sizeof(segment_id), "%d", GpIdentity.segindex);
@@ -106,6 +86,9 @@ fetch_backend_control_body(const char *endpoint, int32 session_id)
 		 endpoint, GpIdentity.segindex, uri.data, session_id);
 
 	handle = churl_init_download(uri.data, headers);
+
+	/* read some bytes to make sure the connection is established */
+	churl_read_check_connectivity(handle);
 
 	/* read the full JSON body */
 	initStringInfo(&response);
@@ -129,7 +112,7 @@ fetch_backend_control_body(const char *endpoint, int32 session_id)
 /*
  * Shared set-returning body: emit a single row carrying the raw JSON response
  * from the local PXF instance for the given endpoint and session id. Dispatched
- * with EXECUTE ON ALL SEGMENTS (which Cloudberry only permits for set-returning
+ * with EXECUTE ON ALL SEGMENTS (which Greenplum only permits for set-returning
  * functions); the pxf_cancel_backend / pxf_interrupt_backend SQL wrappers sum
  * the per-segment counts.
  */

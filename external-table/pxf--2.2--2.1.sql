@@ -15,11 +15,22 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-/* fdw/pxf_fdw--2.1--2.0.sql */
+/* external-table/pxf--2.2--2.1.sql */
 
--- complain if script is sourced in psql, rather than via ALTER EXTENSION
-\echo Use "ALTER EXTENSION pxf_fdw UPDATE TO '2.0'" to load this file. \quit
+------------------------------------------------------------------
+-- PXF Activity Monitoring
+------------------------------------------------------------------
 
+-- remove the objects from the extension
+ALTER EXTENSION pxf DROP FUNCTION pxf_interrupt_backend(int);
+ALTER EXTENSION pxf DROP FUNCTION pxf_cancel_backend(int);
+ALTER EXTENSION pxf DROP FUNCTION pxf_interrupt_backend_raw(int);
+ALTER EXTENSION pxf DROP FUNCTION pxf_cancel_backend_raw(int);
+ALTER EXTENSION pxf DROP VIEW pxf_stat_activity;
+ALTER EXTENSION pxf DROP FUNCTION pxf_stat_activity_raw();
+
+-- remove the objects themselves from the catalog; the view depends on
+-- pxf_stat_activity_raw(), so it has to go first
 DROP FUNCTION pxf_interrupt_backend(int);
 DROP FUNCTION pxf_cancel_backend(int);
 DROP FUNCTION pxf_interrupt_backend_raw(int);

@@ -15,10 +15,11 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-/* fdw/pxf_fdw--2.0--2.1.sql */
+/* external-table/pxf--2.1--2.2.sql */
 
--- complain if script is sourced in psql, rather than via ALTER EXTENSION
-\echo Use "ALTER EXTENSION pxf_fdw UPDATE TO '2.1'" to load this file. \quit
+------------------------------------------------------------------
+-- PXF Activity Monitoring
+------------------------------------------------------------------
 
 -- Raw per-segment accessor: each segment asks its local PXF instance for the
 -- activity that originates from its own segment id and returns the JSON body
@@ -55,7 +56,7 @@ FROM (
 
 -- Per-segment cancellation primitives backing pxf_cancel_backend /
 -- pxf_interrupt_backend. Each segment asks its local PXF instance to terminate
--- the in-flight requests of the given Cloudberry session that originate from its
+-- the in-flight requests of the given Greenplum session that originate from its
 -- own segment id, returning the JSON body verbatim as a single row (e.g.
 -- {"cancelled":N} / {"interrupted":N}). Dispatched to every segment; the counts
 -- are summed by the SQL wrappers below. Set-returning because EXECUTE ON ALL
@@ -68,16 +69,16 @@ CREATE FUNCTION pxf_interrupt_backend_raw(session_id int) RETURNS SETOF text
 AS 'MODULE_PATHNAME', 'pxf_interrupt_backend_raw'
 LANGUAGE C VOLATILE STRICT EXECUTE ON ALL SEGMENTS;
 
--- Gracefully cancels the in-flight PXF requests of a Cloudberry session across
+-- Gracefully cancels the in-flight PXF requests of a Greenplum session across
 -- the whole cluster by ending their current bridge. Returns the number of
 -- requests that were signalled. Analogous to pg_cancel_backend, but keyed by
--- the Cloudberry session id (as reported in pxf_stat_activity.session_id).
+-- the Greenplum session id (as reported in pxf_stat_activity.session_id).
 CREATE FUNCTION pxf_cancel_backend(session_id int) RETURNS int AS $$
     SELECT coalesce(sum((raw::json ->> 'cancelled')::int), 0)::int
     FROM pxf_cancel_backend_raw(session_id) AS raw
 $$ LANGUAGE sql VOLATILE;
 
--- Interrupts the worker thread(s) of the in-flight PXF requests of a Cloudberry
+-- Interrupts the worker thread(s) of the in-flight PXF requests of a Greenplum
 -- session across the whole cluster. Returns the number of requests that were
 -- interrupted. A forceful complement to pxf_cancel_backend for requests that do
 -- not observe cancellation (e.g. blocked in a non-interruptible read).
