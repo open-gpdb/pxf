@@ -55,7 +55,7 @@ RUN chmod +x /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh && 
 
 ENV SRC_DIR="/gpdb_src"
 ENV BUILD_DESTINATION="/gpdb_src/debian/build"
-ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --enable-orca --disable-yezzey"
+ENV CONFIGURE_EXTRA_OPTS="--disable-gpperfmon --without-python --enable-orca --disable-yezzey --without-gp-stats-collector"
 WORKDIR /gpdb_src
 RUN /pxf_src/devops/build_automation/gpdb/scripts/configure-gpdb.sh
 RUN /pxf_src/devops/build_automation/gpdb/scripts/build-gpdb.sh
