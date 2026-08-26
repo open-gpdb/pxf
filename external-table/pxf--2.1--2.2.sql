@@ -86,3 +86,14 @@ CREATE FUNCTION pxf_interrupt_backend(session_id int) RETURNS int AS $$
     SELECT coalesce(sum((raw::json ->> 'interrupted')::int), 0)::int
     FROM pxf_interrupt_backend_raw(session_id) AS raw
 $$ LANGUAGE sql VOLATILE;
+
+-- Functions default to EXECUTE for PUBLIC, which would let any user observe and
+-- cancel other users' PXF requests (session ids are trivially enumerable).
+-- Superusers bypass ACLs; delegate explicitly with e.g.
+--   GRANT EXECUTE ON FUNCTION pxf_cancel_backend(int) TO monitoring_role;
+-- The wrappers are plain SQL, so the _raw primitives must be revoked as well.
+REVOKE ALL ON FUNCTION pxf_stat_activity_raw() FROM PUBLIC;
+REVOKE ALL ON FUNCTION pxf_cancel_backend_raw(int) FROM PUBLIC;
+REVOKE ALL ON FUNCTION pxf_interrupt_backend_raw(int) FROM PUBLIC;
+REVOKE ALL ON FUNCTION pxf_cancel_backend(int) FROM PUBLIC;
+REVOKE ALL ON FUNCTION pxf_interrupt_backend(int) FROM PUBLIC;
