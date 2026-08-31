@@ -12,7 +12,7 @@ import java.net.URLClassLoader;
 /**
  * Main PXF Spring Configuration class.
  */
-@SpringBootApplication(scanBasePackages = "org.greenplum.pxf", scanBasePackageClasses = PxfUserGroupInformation.class)
+@SpringBootApplication(scanBasePackages = {"org.greenplum.pxf", "org.apache.cloudberry.pxf"}, scanBasePackageClasses = PxfUserGroupInformation.class)
 public class PxfServiceApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(PxfServiceApplication.class);

@@ -1,5 +1,6 @@
 package org.greenplum.pxf.service.controller;
 
+import org.apache.cloudberry.pxf.service.activity.ActiveRequestRegistry;
 import org.apache.hadoop.conf.Configuration;
 import org.greenplum.pxf.api.model.ConfigurationFactory;
 import org.greenplum.pxf.api.model.RequestContext;
@@ -61,7 +62,7 @@ public class WriteServiceImplTest {
         });
         when(mockBridgeFactory.getBridge(mockContext)).thenReturn(mockBridge);
 
-        writeService = new WriteServiceImpl(mockConfigurationFactory, mockBridgeFactory, mockSecurityService, mockMetricReporter);
+        writeService = new WriteServiceImpl(mockConfigurationFactory, mockBridgeFactory, mockSecurityService, mockMetricReporter, new ActiveRequestRegistry());
     }
 
     @Test

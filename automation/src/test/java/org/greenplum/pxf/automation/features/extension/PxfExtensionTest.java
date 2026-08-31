@@ -53,7 +53,7 @@ public class PxfExtensionTest extends BaseFunctionality {
 
     @Test(groups = {"gpdb", "pxfExtensionVersion2_1"})
     public void testPxfCreateExtension() throws Exception {
-        gpdb.runQuery("CREATE EXTENSION pxf");
+        gpdb.runQuery("CREATE EXTENSION pxf VERSION '2.1'");
         // create a regular external table
         createReadablePxfTable("default", location, false);
         // create an external table with the multibyte formatter
@@ -79,7 +79,7 @@ public class PxfExtensionTest extends BaseFunctionality {
 
         // create an external table with the multibyte formatter
         createReadablePxfTable("default", location_multi, true);
-        gpdb.runQuery("ALTER EXTENSION pxf UPDATE");
+        gpdb.runQuery("ALTER EXTENSION pxf UPDATE TO '2.1'");
         runSqlTest("features/extension_tests/upgrade/step_2_after_alter_extension");
     }
 
@@ -97,7 +97,7 @@ public class PxfExtensionTest extends BaseFunctionality {
 
     @Test(groups = {"gpdb", "pxfExtensionVersion2_1"})
     public void testPxfDowngrade() throws Exception {
-        gpdb.runQuery("CREATE EXTENSION pxf");
+        gpdb.runQuery("CREATE EXTENSION pxf VERSION '2.1'");
 
         createReadablePxfTable("default", location, false);
         // create an external table with the multibyte formatter
@@ -110,7 +110,7 @@ public class PxfExtensionTest extends BaseFunctionality {
 
     @Test(groups = {"gpdb", "pxfExtensionVersion2_1"})
     public void testPxfDowngradeThenUpgradeAgain() throws Exception {
-        gpdb.runQuery("CREATE EXTENSION pxf");
+        gpdb.runQuery("CREATE EXTENSION pxf VERSION '2.1'");
 
         createReadablePxfTable("default", location, false);
         // create an external table with the multibyte formatter
@@ -122,6 +122,24 @@ public class PxfExtensionTest extends BaseFunctionality {
 
         gpdb.runQuery("ALTER EXTENSION pxf UPDATE TO '2.1'");
         runSqlTest("features/extension_tests/downgrade_then_upgrade/step_3_after_alter_extension_upgrade");
+    }
+
+    @Test(groups = {"gpdb", "pxfExtensionVersion2_1"})
+    public void testPxfCreateExtension22() throws Exception {
+        gpdb.runQuery("CREATE EXTENSION pxf VERSION '2.2'");
+        runSqlTest("features/extension_tests_2_2/create_extension");
+    }
+
+    @Test(groups = {"gpdb", "pxfExtensionVersion2_1"})
+    public void testPxfUpgradeDowngrade22() throws Exception {
+        gpdb.runQuery("CREATE EXTENSION pxf VERSION '2.1'");
+        runSqlTest("features/extension_tests_2_2/upgrade_downgrade/step_1_create_2_1");
+
+        gpdb.runQuery("ALTER EXTENSION pxf UPDATE TO '2.2'");
+        runSqlTest("features/extension_tests_2_2/upgrade_downgrade/step_2_after_upgrade_2_2");
+
+        gpdb.runQuery("ALTER EXTENSION pxf UPDATE TO '2.1'");
+        runSqlTest("features/extension_tests_2_2/upgrade_downgrade/step_3_after_downgrade_2_1");
     }
 
     private void createReadablePxfTable(String serverName, String location, boolean multi) throws Exception {

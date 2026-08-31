@@ -2,6 +2,8 @@ package org.greenplum.pxf.service.controller;
 
 import com.google.common.io.CountingInputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cloudberry.pxf.service.activity.ActiveRequestRegistry;
+import org.greenplum.pxf.api.error.PxfRuntimeException;
 import org.greenplum.pxf.api.model.ConfigurationFactory;
 import org.greenplum.pxf.api.model.RequestContext;
 import org.greenplum.pxf.api.utilities.Utilities;
@@ -24,15 +26,18 @@ public class WriteServiceImpl extends BaseServiceImpl<OperationStats> implements
     /**
      * Creates a new instance.
      *
-     * @param configurationFactory configuration factory
-     * @param bridgeFactory        bridge factory
-     * @param securityService      security service
-     */
+     * @param configurationFactory  configuration factory
+     * @param bridgeFactory         bridge factory
+     * @param securityService       security service
+     * @param metricsReporter       metrics reporter service
+     * @param activeRequestRegistry registry of in-flight requests
+     * */
     public WriteServiceImpl(ConfigurationFactory configurationFactory,
                             BridgeFactory bridgeFactory,
                             SecurityService securityService,
-                            MetricsReporter metricsReporter) {
-        super("Write", configurationFactory, bridgeFactory, securityService, metricsReporter);
+                            MetricsReporter metricsReporter,
+                            ActiveRequestRegistry activeRequestRegistry) {
+        super("Write", configurationFactory, bridgeFactory, securityService, metricsReporter, activeRequestRegistry);
     }
 
     @Override
@@ -62,10 +67,17 @@ public class WriteServiceImpl extends BaseServiceImpl<OperationStats> implements
         // dataStream (and inputStream as the result) will close automatically at the end of the try block
         CountingInputStream countingInputStream = new CountingInputStream(inputStream);
         try (DataInputStream dataStream = new DataInputStream(countingInputStream)) {
+            // expose the bridge so pxf_cancel_backend can end it mid-write
+            attachBridge(bridge);
             // open the output file, returns true or throws an error
             bridge.beginIteration();
-            while (bridge.setNext(dataStream)) {
+            while (!isCancelled() && bridge.setNext(dataStream)) {
                 operationStats.reportCompletedRecord(countingInputStream.getCount());
+            }
+            if (isCancelled()) {
+                throw new PxfRuntimeException(String.format(
+                        "Write to resource %s cancelled by pxf_cancel_backend",
+                        context.getDataSource()));
             }
         } catch (Exception e) {
             operationResult.setException(e);
@@ -76,7 +88,11 @@ public class WriteServiceImpl extends BaseServiceImpl<OperationStats> implements
                 if (operationResult.getException() == null) {
                     operationResult.setException(e);
                 }
+            } finally {
+                // stop exposing the now-closed bridge to pxf_cancel_backend
+                attachBridge(null);
             }
+
 
             // in the case where we fail to report a record due to an exception,
             // report the number of bytes that we were able to read before failure
