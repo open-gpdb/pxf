@@ -1,7 +1,6 @@
 package org.apache.cloudberry.pxf.plugins.iceberg.catalog;
 
 import org.apache.cloudberry.pxf.plugins.iceberg.IcebergSettings;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.iceberg.CatalogProperties;
 import org.apache.iceberg.aws.s3.S3FileIO;
@@ -49,15 +48,10 @@ public class RestCatalogFactory implements CatalogFactory {
                 || StringUtils.isBlank(settings.getSslTrustStorePath())) {
             return;
         }
-        // can't use this constant since it's protected
-        //props.put(HTTPClient.REST_TLS_CONFIGURER, RestTLSConfigurer.class.getCanonicalName());
-        props.put("rest.client.tls.configurer-impl", RestTLSConfigurer.class.getCanonicalName());
-
-        props.put(RestTLSConfigurer.TRUSTSTORE_PATH_PARAM_NAME, settings.getSslTrustStorePath());
-        props.put(RestTLSConfigurer.TRUSTSTORE_PASSWORD_PARAM_NAME,
-                ObjectUtils.firstNonNull(settings.getSslTrustStorePassword(), JVM_TRUSTSTORE_DEFAULT_PASSWORD)
-        );
+        // Iceberg 1.9 REST client has no hook for a custom SSLContext (TLSConfigurer comes with 1.10),
+        // so the trust store has to be configured for the whole PXF JVM
+        throw new IllegalArgumentException("A custom trust store is not supported for the REST catalog, "
+                + "configure javax.net.ssl.trustStore in PXF_JVM_OPTS instead");
     }
-
 
 }
