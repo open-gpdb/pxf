@@ -29,7 +29,7 @@ public class RestCatalogFactory implements CatalogFactory {
     private Map<String, String> getCatalogProperties(IcebergSettings settings) {
         HashMap<String, String> props = new HashMap<>(settings.getCatalogProperties());
         checkFileIoImplProperty(props);
-        checkSSLProperties(settings, props);
+        checkSSLProperties(settings);
         return props;
     }
 
@@ -43,7 +43,7 @@ public class RestCatalogFactory implements CatalogFactory {
                 });
     }
 
-    private void checkSSLProperties(IcebergSettings settings, Map<String, String> props) {
+    private void checkSSLProperties(IcebergSettings settings) {
         if(!settings.isSsl()
                 || StringUtils.isBlank(settings.getSslTrustStorePath())) {
             return;
