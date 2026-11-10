@@ -15,6 +15,17 @@ function _main() {
     fi
 }
 
-log 'PXF Out of memory detected'
-_main "$1" &
-log 'PXF shutdown scheduled'
+# Close inherited JVM FDs before running child commands.
+# Parse the block first and exit inside it because this also closes Bash's script FD.
+{
+    for fd in /dev/fd/[0-9]*; do
+        fd=${fd##*/}
+        [[ $fd =~ ^[0-9]+$ && $fd -gt 2 ]] || continue
+        eval "exec ${fd}>&-"
+    done
+
+    log 'PXF Out of memory detected'
+    _main "$1" &
+    log 'PXF shutdown scheduled'
+    exit
+}
