@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function close_inherited_fds() {
+    local fd
+    for fd in /dev/fd/[0-9]*; do
+        fd=${fd##*/}
+        [[ $fd =~ ^[0-9]+$ && $fd -gt 2 ]] || continue
+        eval "exec ${fd}>&-"
+    done
+}
+
 function log() {
     echo "=====> $(date) $* <======" >> "${PXF_LOGDIR}/pxf-oom.log"
 }
@@ -11,21 +20,13 @@ function _main() {
     # "insurance policy":
     local PID=$1
     if [[ -n $PID ]]; then
-        ps "$1" >/dev/null && kill -9 "$1"
+        ps "$PID" >/dev/null && kill -9 "$PID"
     fi
 }
 
-# Close inherited JVM FDs before running child commands.
-# Parse the block first and exit inside it because this also closes Bash's script FD.
-{
-    for fd in /dev/fd/[0-9]*; do
-        fd=${fd##*/}
-        [[ $fd =~ ^[0-9]+$ && $fd -gt 2 ]] || continue
-        eval "exec ${fd}>&-"
-    done
+# Close inherited JVM FDs before launching any child commands.
+close_inherited_fds
 
-    log 'PXF Out of memory detected'
-    _main "$1" &
-    log 'PXF shutdown scheduled'
-    exit
-}
+log 'PXF Out of memory detected'
+_main "$1" &
+log 'PXF shutdown scheduled'
