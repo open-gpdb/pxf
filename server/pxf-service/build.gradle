@@ -1,3 +1,8 @@
+// Iceberg-enabled service distributions require Java 17; legacy builds omit the module.
+if (findProject(':pxf-iceberg') != null) {
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 apply plugin: "org.springframework.boot"
 
 configurations {
@@ -29,6 +34,9 @@ dependencies {
     implementation(project(':pxf-jdbc'))
     implementation(project(':pxf-json'))
     implementation(project(':pxf-s3'))
+    if (findProject(':pxf-iceberg') != null) {
+        implementation(project(':pxf-iceberg'))
+    }
     implementation(project(':pxf-diagnostic'))
 
     implementation("com.google.guava:guava")

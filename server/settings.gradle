@@ -29,3 +29,8 @@ include 'pxf-service',
         'pxf-json',
         'pxf-s3',
         'pxf-diagnostic'
+
+// Iceberg uses Java 17 language features; keep legacy PXF builds available on Java 8/11.
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+    include 'pxf-iceberg'
+}
