@@ -24,7 +24,6 @@
 
 #include "catalog/pg_operator.h"
 #include "optimizer/clauses.h"
-#include "optimizer/optimizer.h"
 #include "parser/parse_expr.h"
 #include "utils/builtins.h"
 #include "utils/guc.h"
@@ -180,7 +179,7 @@ dbop_pxfop_map pxf_supported_opr_op_expr[] =
 	{85 /* boolne */ , PXFOP_NE},
 
 	/* bpchar */
-	{BpcharEqualOperator /* bpchareq */ , PXFOP_EQ},
+	{BPCharEqualOperator /* bpchareq */ , PXFOP_EQ},
 	{1058 /* bpcharlt */ , PXFOP_LT},
 	{1060 /* bpchargt */ , PXFOP_GT},
 	{1059 /* bpcharle */ , PXFOP_LE},
@@ -249,7 +248,7 @@ dbop_pxfop_array_map pxf_supported_opr_scalar_array_op_expr[] =
 	{1120 /* float48eq */ , PXFOP_IN, true},
 
 	/* bpchar */
-	{BpcharEqualOperator /* bpchareq */ , PXFOP_IN,
+	{BPCharEqualOperator /* bpchareq */ , PXFOP_IN,
 	true},
 };
 
@@ -854,25 +853,6 @@ OpExprToPxfFilter(OpExpr *expr, PxfFilterDesc *filter)
 		}
 	}
 
-	/*
-	 * Try to evaluate constant expressions in operands.
-	 * This handles implicit type casts where PostgreSQL wraps a constant
-	 * in a FuncExpr (e.g., int4 -> numeric cast when comparing a numeric
-	 * column with an integer constant). Evaluating these gives us back a
-	 * plain Const node that we can serialize for filter pushdown.
-	 */
-	if (!IsA(leftop, Var) && !IsA(leftop, Const))
-	{
-		Node *simplified = eval_const_expressions(NULL, leftop);
-		if (IsA(simplified, Const))
-			leftop = simplified;
-	}
-	if (!IsA(rightop, Var) && !IsA(rightop, Const))
-	{
-		Node *simplified = eval_const_expressions(NULL, rightop);
-		if (IsA(simplified, Const))
-			rightop = simplified;
-	}
 
 	/* arguments must be VAR and CONST */
 	if (IsA(leftop, Var) && IsA(rightop, Const))

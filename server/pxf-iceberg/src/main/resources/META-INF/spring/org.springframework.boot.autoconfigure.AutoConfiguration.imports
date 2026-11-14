@@ -1,1 +1,1 @@
-org.apache.cloudberry.pxf.plugins.iceberg.IcebergAutoConfiguration
+org.greenplum.pxf.plugins.iceberg.IcebergAutoConfiguration

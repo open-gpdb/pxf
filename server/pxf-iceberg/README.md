@@ -2,11 +2,25 @@
 
 Overview
 
+## open-gpdb backport
+
+Cloudberry source revision: `696990090165fcf8d72ce7bc82a2fdb61cb82dc5`.
+Original Greengage commits are imported directly from GreengageDB/pxf; original authors,
+author dates and commit messages are preserved. Cloudberry fixes follow as individual commits.
+All open-gpdb namespace, build and compatibility changes are separate commits.
+
+Build and run Iceberg-enabled PXF with Java 17 or newer. Builds with Java 8/11 omit
+`pxf-iceberg`; the rest of PXF retains its existing Java baseline and Spring Boot 2.7.
+External-table access uses `PROFILE=iceberg` with `pxfwritable_import` / `pxfwritable_export`;
+it does not require `pxf_fdw`. Deploy both the updated PXF service and external-table extension
+to get the request-abort and projection fixes.
+
+
 An Apache Iceberg connector for PXF, ported from
 [GreengageDB/pxf](https://github.com/GreengageDB/pxf) (`server/pxf-iceberg`).
 Covers:
 - Reading (Parquet, ORC, Avro formats via format-specific ReaderFactory impls)
-- Writing (Parquet only, via WriterFactory)
+- Writing (Parquet and Avro, via WriterFactory)
 - Supported catalog types: Hive Metastore, REST
 - Predicate pushdown and column projection during fragmentation
 - Iceberg branch support for reads and writes
@@ -17,13 +31,12 @@ local segments to the Iceberg table once all of them have finished writing. The 
 snapshot from the coordinator, is not supported yet.
 
 Known limitations:
-- An `INSERT` is not atomic: each PXF host commits its own snapshot, and PXF has no way to tell a
-  plugin that a write failed, so a failed or cancelled `INSERT` may leave some of its rows in the table.
-- Only Parquet data files are written.
+- An `INSERT` is not atomic: each PXF host commits its own snapshot, and a failed or cancelled `INSERT` may leave rows already committed by another host in the table.
+- ORC writes fall back to Parquet; Parquet and Avro writes are supported.
 - A custom trust store (`sslTrustStorePath`) is supported for the Hive Metastore catalog only; for
   the REST catalog configure `javax.net.ssl.trustStore` in `PXF_JVM_OPTS`.
 
-There are few ways to define Cloudberry tables that will be used for work with Iceberg. 
+There are few ways to define Greenplum tables that will be used for work with Iceberg. 
 
 **Example of reading using external tables**
 ```sql
@@ -127,3 +140,22 @@ There are few options that help to configure working with Iceberg data source:
 | s3_secret_access_key   | S3 secret access key (in case if s3 is used to keep data)                                                                                                                                                                                                        | iceberg.param.s3.secret-access-key                                  |
 | aws_region             | AWS region (in case if s3 is used to keep data)                                                                                                                                                                                                                  | iceberg.param.client.region                                         |
 
+
+## External-table automation
+
+The `iceberg` TestNG group exercises external-table write/read, primitive types and partitioned tables.
+The optional `iceberg-fdw` group additionally requires the `pxf_fdw` extension.
+Provide a REST catalog reachable at `ICEBERG_REST_URI` (default `http://iceberg-rest:8181`)
+and configure `$PXF_BASE/servers/iceberg_rest/iceberg-site.xml` on every PXF host:
+
+```xml
+<configuration>
+  <property><name>iceberg.config.catalog.type</name><value>REST</value></property>
+  <property><name>iceberg.config.catalog.name</name><value>iceberg_rest</value></property>
+  <property><name>iceberg.param.uri</name><value>http://iceberg-rest:8181</value></property>
+</configuration>
+```
+
+The catalog warehouse must be accessible from all PXF hosts using the same paths/credentials.
+These integration tests require a running database, catalog and configured PXF; they are not
+automatically added to the existing open-gpdb CI matrix by this draft backport.

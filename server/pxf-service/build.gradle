@@ -1,3 +1,8 @@
+// Iceberg-enabled service distributions require Java 17; legacy builds omit the module.
+if (findProject(':pxf-iceberg') != null) {
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 apply plugin: "org.springframework.boot"
 
 configurations {
@@ -29,14 +34,15 @@ dependencies {
     implementation(project(':pxf-jdbc'))
     implementation(project(':pxf-json'))
     implementation(project(':pxf-s3'))
-    implementation(project(':pxf-iceberg'))
+    if (findProject(':pxf-iceberg') != null) {
+        implementation(project(':pxf-iceberg'))
+    }
     implementation(project(':pxf-diagnostic'))
 
     implementation("com.google.guava:guava")
     implementation("commons-codec:commons-codec")
     implementation("commons-collections:commons-collections")
     implementation("commons-lang:commons-lang")
-    implementation("commons-logging:commons-logging")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     implementation("org.apache.logging.log4j:log4j-spring-boot")
     implementation('org.springframework.boot:spring-boot-starter-actuator')
@@ -63,6 +69,7 @@ dependencies {
     testCompileOnly("org.apache.hadoop:hadoop-annotations")
     testImplementation("com.esotericsoftware:kryo")
     testImplementation("commons-io:commons-io")
+    testImplementation("org.simplify4u:slf4j-mock") // for MDC mocking
 
     developmentOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
@@ -76,12 +83,12 @@ bootJar {
     manifest {
         attributes("Implementation-Title": project.name)
         attributes("Implementation-Version": project.version)
-        attributes('Main-Class': 'org.springframework.boot.loader.launch.PropertiesLauncher')
+        attributes('Main-Class': 'org.springframework.boot.loader.PropertiesLauncher')
     }
 }
 
 springBoot {
-    mainClass = "org.apache.cloudberry.pxf.service.PxfServiceApplication"
+    mainClass = "org.greenplum.pxf.service.PxfServiceApplication"
     buildInfo {
         properties {
             additional = [

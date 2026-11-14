@@ -44,10 +44,14 @@ typedef struct PxfFdwScanState
 	StringInfoData uri;
 	Relation	relation;
 	char	   *filter_str;
+#if PG_VERSION_NUM >= 90600
 	ExprState  *quals;
+#else
+	List	   *quals;
+#endif
 	List	   *retrieved_attrs;
 	PxfOptions *options;
-	CopyFromState	cstate;
+	CopyState	cstate;
 	ProjectionInfo *projectionInfo;
 } PxfFdwScanState;
 
@@ -56,14 +60,19 @@ typedef struct PxfFdwScanState
  */
 typedef struct PxfFdwModifyState
 {
-	CopyToState	cstate;			/* state of writing to PXF */
+	CopyState	cstate;			/* state of writing to PXF */
 
 	CHURL_HANDLE churl_handle;	/* curl handle */
 	CHURL_HEADERS churl_headers;	/* curl headers */
 	StringInfoData uri;			/* rest endpoint URI for modify */
 	Relation	relation;
 	PxfOptions *options;		/* FDW options */
-	MemoryContextCallback abort_callback;	/* closes the connection on abort */
+	MemoryContextCallback abort_callback; /* closes the connection on abort */
+
+#if PG_VERSION_NUM < 90600
+	Datum	   *values;			/* List of values exported for the row */
+	bool	   *nulls;			/* List of null fields for the exported row */
+#endif
 } PxfFdwModifyState;
 
 /* Clean up churl related data structures from the context */
@@ -76,7 +85,11 @@ void		PxfBridgeImportStart(PxfFdwScanState *pxfsstate);
 void		PxfBridgeExportStart(PxfFdwModifyState *pxfmstate);
 
 /* Reads data from the PXF server into the given buffer of a given size */
+#if PG_VERSION_NUM >= 90600
 int			PxfBridgeRead(void *outbuf, int minlen, int maxlen, void *extra);
+#else
+int			PxfBridgeRead(void *outbuf, int datasize, void *extra);
+#endif
 
 /* Writes data from the given buffer of a given size to the PXF server */
 int			PxfBridgeWrite(PxfFdwModifyState *context, char *databuf, int datalen);

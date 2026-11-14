@@ -21,13 +21,16 @@ rootProject.name = 'pxf'
 
 include 'pxf-service',
         'pxf-api',
-        'pxf-hbase-lib',
         'pxf-hbase',
         'pxf-hdfs',
         'pxf-hive',
-        'pxf-iceberg',
         'pxf-jdbc',
         'pxf-jdbc-drivers',
         'pxf-json',
         'pxf-s3',
         'pxf-diagnostic'
+
+// Iceberg uses Java 17 language features; keep legacy PXF builds available on Java 8/11.
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+    include 'pxf-iceberg'
+}

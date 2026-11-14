@@ -20,7 +20,7 @@ package org.apache.cloudberry.pxf.service.activity;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cloudberry.pxf.service.bridge.Bridge;
+import org.greenplum.pxf.service.bridge.Bridge;
 
 import java.util.concurrent.locks.ReentrantLock;
 
