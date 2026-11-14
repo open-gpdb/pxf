@@ -21,6 +21,7 @@ rootProject.name = 'pxf'
 
 include 'pxf-service',
         'pxf-api',
+        'pxf-hbase-lib',
         'pxf-hbase',
         'pxf-hdfs',
         'pxf-hive',

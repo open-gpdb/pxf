@@ -35,6 +35,7 @@ dependencies {
     implementation("commons-codec:commons-codec")
     implementation("commons-collections:commons-collections")
     implementation("commons-lang:commons-lang")
+    implementation("commons-logging:commons-logging")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     implementation("org.apache.logging.log4j:log4j-spring-boot")
     implementation('org.springframework.boot:spring-boot-starter-actuator')
@@ -61,7 +62,6 @@ dependencies {
     testCompileOnly("org.apache.hadoop:hadoop-annotations")
     testImplementation("com.esotericsoftware:kryo")
     testImplementation("commons-io:commons-io")
-    testImplementation("org.simplify4u:slf4j-mock") // for MDC mocking
 
     developmentOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
@@ -75,12 +75,12 @@ bootJar {
     manifest {
         attributes("Implementation-Title": project.name)
         attributes("Implementation-Version": project.version)
-        attributes('Main-Class': 'org.springframework.boot.loader.PropertiesLauncher')
+        attributes('Main-Class': 'org.springframework.boot.loader.launch.PropertiesLauncher')
     }
 }
 
 springBoot {
-    mainClass = "org.greenplum.pxf.service.PxfServiceApplication"
+    mainClass = "org.apache.cloudberry.pxf.service.PxfServiceApplication"
     buildInfo {
         properties {
             additional = [

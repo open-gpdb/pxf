@@ -202,9 +202,171 @@
 
 =======================================================================
 
-This product contains additional works that are distributed under
-Apache License, Version 2.0 (ALv2).
+This product is derived from software originally developed by:
 
-    Apache Tomcat 7.0.96
+   Greenplum Platform Extension Framework
+   Copyright 2018-Present VMware, Inc. or its affiliates. All Rights Reserved.
+
+   This product is licensed to you under the Apache 2.0 license (the "License").
+   You may not use this product except in compliance with the Apache 2.0 License.
+
+   This product may include a number of subcomponents with separate copyright 
+   notices and license terms. Your use of these subcomponents is subject to the 
+   terms and conditions of the subcomponent's license, as noted in the LICENSE file.
+
+
+The Greenplum Platform Extension Framework includes:
+
+----------------------------
+   Apache License - Version 2.0
+
+The following files and directories are licensed under the Apache License, Version 2.0:
+
+FDW Module:
+   fdw/
+
+External Table Module:
+   external-table/
+
+Server Module (Java Sources) and Configuration Files:
+   server/
+
+Documentation Templates:
+   docs/
+
+CI/Test Templates:
+   automation/
+   ci/
+
+CLI and Packaging:
+   cli/
+   package/
+
+Data Loading Tests:
+   load/
 
 =======================================================================
+
+Apache Cloudberry PXF includes codes from
+
+----------------------------
+   Apache License - Version 2.0
+
+      Gradle wrapper scripts from Gradle (https://gradle.org),
+      copyright 2015-2021 the original authors:
+
+      server/gradlew
+      server/gradlew.bat
+
+----------------------------
+   Apache License - Version 2.0
+
+      Configuration templates for the CI single-node cluster, based on the
+      templates shipped by Apache Hadoop, Apache HBase, Apache Hive,
+      Apache Tez and Apache Ranger (see NOTICE):
+
+      ci/singlecluster/templates/hadoop/etc/hadoop/core-site.xml
+      ci/singlecluster/templates/hadoop/etc/hadoop/hdfs-site.xml
+      ci/singlecluster/templates/hadoop/etc/hadoop/yarn-env.sh
+      ci/singlecluster/templates/hbase/conf/hbase-env.sh
+      ci/singlecluster/templates/hbase/conf/hbase-site.xml
+      ci/singlecluster/templates/hive/conf/hive-env.sh
+      ci/singlecluster/templates/tez/conf/tez-site.xml
+      ci/singlecluster/templates/ranger/install.properties
+      ci/singlecluster/templates/usersync/install.properties
+
+----------------------------
+   Apache License - Version 2.0
+
+      Code and test templates from Apache Hadoop, Apache HBase and
+      Apache ZooKeeper (see NOTICE):
+
+      server/pxf-api/src/main/java/org/apache/hadoop/security/PxfUserGroupInformation.java
+      (adapts the keytab login logic of Hadoop's UserGroupInformation)
+
+      server/pxf-api/src/main/java/org/apache/cloudberry/pxf/api/security/SecureLogin.java
+      (getLocalHostName() is copied from Hadoop's SecurityUtil)
+
+      automation/src/test/resources/templates/yarn/container-executor.cfg
+      automation/src/test/resources/templates/hbase/hbase-env.sh
+      automation/src/test/resources/templates/zk/zoo.cfg
+
+----------------------------
+   Apache License - Version 2.0
+
+      Gradle wrapper installer, adapted from Project Nessie
+      (https://github.com/projectnessie/nessie), see NOTICE:
+
+      server/gradlew-install.sh
+
+      Copyright (C) 2024 Dremio
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+----------------------------
+   Apache License - Version 2.0
+
+      server/pxf-hbase-lib/build.gradle
+
+      Copyright (C) 2024 Arenadata
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+=======================================================================
+
+Apache Cloudberry PXF includes code from PostgreSQL, under the PostgreSQL
+License:
+
+      fdw/pxf_deparse.c
+      (deparseTargetList() is adapted from contrib/postgres_fdw)
+
+      fdw/pxf_option.c
+      (option validation follows contrib/file_fdw)
+
+      automation/src/test/resources/templates/hive/postgresql.conf
+      automation/src/test/resources/templates/hive/pg_hba.conf
+      (based on PostgreSQL's sample configuration files)
+
+   PostgreSQL Database Management System
+   (formerly known as Postgres, then as Postgres95)
+
+   Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+
+   Portions Copyright (c) 1994, The Regents of the University of California
+
+   Permission to use, copy, modify, and distribute this software and its
+   documentation for any purpose, without fee, and without a written agreement
+   is hereby granted, provided that the above copyright notice and this
+   paragraph and the following two paragraphs appear in all copies.
+
+   IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
+   DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING
+   LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS
+   DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE
+   POSSIBILITY OF SUCH DAMAGE.
+
+   THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+   AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+   ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO
+   PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.

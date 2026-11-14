@@ -29,10 +29,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-// override Spring Framework version to pick the Spring MVC 5.3.33 with the async race condition fix
-// https://github.com/spring-projects/spring-framework/issues/32342
-ext['spring-framework.version'] = '5.3.33'
-ext['tomcat.version'] = '9.0.123'
+ext['tomcat.version'] = '10.1.60'
 
 def javaProjects = subprojects.findAll {
     it.name.startsWith("pxf-")
@@ -50,8 +47,8 @@ allprojects {
 
 idea {
     project {
-        jdkName = "1.8"
-        languageLevel = "8"
+        jdkName = "17"
+        languageLevel = "17"
         vcs = "Git"
     }
 }
@@ -61,11 +58,18 @@ configure(javaProjects) {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: "io.freefair.lombok"
 
-    group = 'org.greenplum.pxf'
+    group = 'org.apache.cloudberry.pxf'
     version = "${version}"
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    tasks.withType(JavaCompile).configureEach {
+        // Keep the Java 17 API/bytecode baseline when building with newer JDKs.
+        options.release = 17
+    }
+
+    ext['log4j2.version'] = '2.25.4'
 
     dependencyManagement {
         imports {
@@ -92,7 +96,7 @@ configure(javaProjects) {
             dependency("commons-lang:commons-lang:2.6")
             dependency("commons-lang:commons-lang3:3.9")
             dependency("commons-logging:commons-logging:1.1.3")
-            dependency("io.airlift:aircompressor:0.27")
+            dependency("io.airlift:aircompressor:2.0.2")
             dependency("javax.jdo:jdo-api:3.0.1")
             dependency("joda-time:joda-time:2.8.1")
             dependency("net.sf.opencsv:opencsv:2.3")
@@ -102,27 +106,21 @@ configure(javaProjects) {
             dependency("org.apache.htrace:htrace-core:3.1.0-incubating")
             dependency("org.apache.htrace:htrace-core4:4.2.0-incubating")
 
-            dependency("org.apache.zookeeper:zookeeper:3.4.6")
+            dependency("org.apache.zookeeper:zookeeper:3.8.6")
+            dependency("org.apache.zookeeper:zookeeper-jute:3.8.6")
             dependency("org.codehaus.woodstox:stax2-api:3.1.4")
             dependency("org.datanucleus:datanucleus-api-jdo:4.2.4")
             dependency("org.datanucleus:datanucleus-core:4.1.17")
             dependency("org.jodd:jodd-core:3.5.2")
-            dependency("org.json:json:20090211")
             dependency("org.mortbay.jetty:jetty-util:6.1.26")
             dependency("org.objenesis:objenesis:2.1")
 
-            // revert once springboot provided postgresql is upgraded to bundle postgresql:42.7.2+
-            dependency("org.postgresql:postgresql:42.7.2")
+            dependency("org.postgresql:postgresql:42.7.13")
 
-            dependency("org.apache.tomcat.embed:tomcat-embed-core:9.0.123")
-            dependency("org.apache.tomcat.embed:tomcat-embed-el:9.0.123")
-            dependency("org.apache.tomcat.embed:tomcat-embed-websocket:9.0.123")
-
-            dependency("org.simplify4u:slf4j-mock:2.3.0")
             dependency("org.threeten:threeten-extra:1.5.0")
             dependency("org.tukaani:xz:1.8")
             dependency("org.wildfly.openssl:wildfly-openssl:1.0.7.Final")
-            dependency("org.xerial.snappy:snappy-java:1.1.10.4")
+            dependency("org.xerial.snappy:snappy-java:1.1.10.7")
 
             // Hadoop dependencies
             dependencySet(group:"org.apache.hadoop", version:"${hadoopVersion}") {
@@ -151,14 +149,14 @@ configure(javaProjects) {
                 entry("hbase-metrics-api")
                 entry("hbase-metrics")
             }
-            dependencySet(group:"org.apache.hbase.thirdparty", version:"3.3.0") {
+            dependencySet(group:"org.apache.hbase.thirdparty", version:"4.1.13") {
                 entry("hbase-shaded-protobuf")
                 entry("hbase-shaded-miscellaneous")
                 entry("hbase-shaded-gson")
                 entry("hbase-shaded-netty")
                 entry("hbase-unsafe")
             }
-            dependency("org.apache.yetus:audience-annotations:0.5.0")
+            dependency("org.apache.yetus:audience-annotations:0.13.0")
             dependency("io.opentelemetry:opentelemetry-api:1.49.0")
             dependency("io.opentelemetry:opentelemetry-context:1.49.0")
             dependency("io.opentelemetry.semconv:opentelemetry-semconv:1.29.0-alpha")
@@ -228,30 +226,14 @@ configure(javaProjects) {
                 entry("aws-java-sdk-kms")
                 entry("aws-java-sdk-s3")
             }
+            dependency("org.apache.httpcomponents:httpclient:4.5.14") // Used by AWS SDK
 
-            // currently imported BOM spring-boot-dependencies:2.5.12 includes log4j-bom:2.17.2 and
-            // importing a module log4j-spring-boot:2.17.2 results in its transitive Junit dependencies
-            // being put into compileClasspath so we have to exclude them here so they are not shipped with PXF
-            // this is fixed in log4j-spring-boot:2.19.0, which is used by spring-boot-dependencies:3.0.0+
-            // so when we upgrade to Spring Boot version 3.0.0+ we should remove this fix
-            // alternatively we can bump log4j-spring-boot to 2.19.0 and not use excludes
-            // dependency("org.apache.logging.log4j:log4j-spring-boot:2.19.0")
-            dependency("org.apache.logging.log4j:log4j-spring-boot:2.17.2") {
-                exclude("org.junit.vintage:junit-vintage-engine")
-                exclude("org.junit.jupiter:junit-jupiter-engine")
-                exclude("org.junit.jupiter:junit-jupiter-api")
-            }
-
-            // JAVA 21 support
-            dependencySet(group:"org.mockito", version:"4.11.0") {
-                entry("mockito-core")
-                entry("mockito-inline")
-            }
-            dependencySet(group:"net.bytebuddy", version:"1.14.19") {
-                entry("byte-buddy")
-                entry("byte-buddy-agent")
-            }
+            dependency("org.apache.logging.log4j:log4j-spring-boot:2.25.4")
         }
+    }
+
+    dependencies {
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     }
 
     task removeIdeaOutDirectory(type: Delete) {
@@ -362,10 +344,10 @@ private static void printResults(result) {
 task stage(type: Copy) {
     description "Build PXF server and stage resulting artifacts for packaging."
     dependsOn ":pxf-service:bootJar"
+    dependsOn ":pxf-hbase-lib:jar"
 
-    // Provide the pxf-hbase jar. The pxf-hbase.jar is required for the PXF
-    // HBase connector to support filter push down
-    from("pxf-hbase/build/libs") { into 'share' }
+    // RegionServers need these Java 8-compatible comparators for numeric filter pushdown.
+    from("pxf-hbase-lib/build/libs") { into 'share' }
     from("pxf-service/build/libs") {
         into 'application'
         rename 'pxf-service-(.+)', 'pxf-app-$1'
@@ -390,5 +372,5 @@ task stageJdbcDrivers(type: Copy) {
     dependsOn ":pxf-jdbc-drivers:jar"
     from(project(':pxf-jdbc-drivers').configurations.runtimeClasspath)
     into("${buildDir}/stage/lib")
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.FAIL
 }

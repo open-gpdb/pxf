@@ -1,17 +1,48 @@
-Greenplum Platform Extension Framework
-Copyright 2018-Present VMware, Inc. or its affiliates. All Rights Reserved.
-
-This product is licensed to you under the Apache 2.0 license (the "License").
-You may not use this product except in compliance with the Apache 2.0 License.
-
-This product may include a number of subcomponents with separate copyright 
-notices and license terms. Your use of these subcomponents is subject to the 
-terms and conditions of the subcomponent's license, as noted in the LICENSE file.
-
-=================================================================
-
-PXF is a subcomponent of Apache HAWQ
-Copyright 2017 The Apache Software Foundation.
+Apache Cloudberry (Incubating)
+Copyright 2024-2026 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software originally developed by Apache HAWQ.
+
+Apache HAWQ
+Copyright 2017 The Apache Software Foundation
+
+---------------------------------------------------------------------------
+
+This product includes software originally developed by VMware.
+
+Greenplum Platform Extension Framework
+Copyright 2018-Present VMware, Inc. or its affiliates. All Rights Reserved.
+
+---------------------------------------------------------------------------
+
+This product includes a Gradle wrapper installer script adapted from
+Project Nessie.
+
+Nessie
+Copyright 2015-2025 Dremio Corporation
+
+---------------------------------------------------------------------------
+
+This product includes code and configuration templates from the following
+Apache Software Foundation projects.
+
+Apache Hadoop
+Copyright 2006 and onwards The Apache Software Foundation.
+
+Apache HBase
+Copyright 2007-2026 The Apache Software Foundation
+
+Apache Hive
+Copyright 2008-2025 The Apache Software Foundation
+
+Apache Tez
+Copyright 2014-2024 The Apache Software Foundation
+
+Apache Ranger
+Copyright 2014-2019 The Apache Software Foundation
+
+Apache ZooKeeper
+Copyright 2009-2026 The Apache Software Foundation
