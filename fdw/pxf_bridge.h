@@ -67,6 +67,7 @@ typedef struct PxfFdwModifyState
 	StringInfoData uri;			/* rest endpoint URI for modify */
 	Relation	relation;
 	PxfOptions *options;		/* FDW options */
+	MemoryContextCallback abort_callback; /* closes the connection on abort */
 
 #if PG_VERSION_NUM < 90600
 	Datum	   *values;			/* List of values exported for the row */
